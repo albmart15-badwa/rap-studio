@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Estudio de Rap PRO+</title>
+  <meta name="theme-color" content="#ff7a00" />
+  <style>
+    :root{
+      --bg:#06080d;
+      --panel:#10151d;
+      --panel2:#151b24;
+      --panel3:#1b2330;
+      --line:#2a3444;
+      --text:#f4f7fb;
+      --muted:#91a1b8;
+      --accent:#ff7a00;
+      --accent2:#00b7ff;
+      --danger:#ff466e;
+      --ok:#22d48a;
+      --warn:#ffb020;
+      --radius:18px;
+      --shadow:0 14px 34px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:radial-gradient(circle at top, #152031 0%, #090b10 45%, #050608 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    body{min-height:100vh}
+
+    .app{
+      width:min(1450px,100%);
+      margin:0 auto;
+      padding:16px;
+      display:grid;
+      gap:16px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .hd{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(90deg, rgba(255,122,0,.09), rgba(0,183,255,.07));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .bd{padding:16px}
+    .stack{display:grid;gap:16px}
+
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:46px;height:46px;border-radius:50%;
+      display:grid;place-items:center;
+      font-weight:900;
+      color:#fff;
+      background:conic-gradient(from 160deg, var(--accent), var(--accent2), var(--accent));
+      box-shadow:0 0 20px rgba(255,122,0,.20), 0 0 24px rgba(0,183,255,.16);
+    }
+    .brand small{display:block;color:var(--muted)}
+
+    .status{display:flex;gap:8px;flex-wrap:wrap}
+    .pill{
+      border:1px solid var(--line);
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:.85rem;
+      background:var(--panel3);
+      color:var(--muted);
+    }
+    .pill.ok{background:rgba(34,212,138,.14);border-color:rgba(34,212,138,.35);color:#fff}
+    .pill.live{background:rgba(255,70,110,.14);border-color:rgba(255,70,110,.35);color:#fff}
+    .pill.warn{background:rgba(255,176,32,.14);border-color:rgba(255,176,32,.35);color:#fff}
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.5fr .95fr 1.05fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .controls-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+    .full{grid-column:1/-1}
+
+    .btn,.field,.file-label,textarea,input[type="text"],input[type="range"],select{
+      width:100%;
+      border:1px solid var(--line);
+      background:var(--panel3);
+      color:var(--text);
+      border-radius:14px;
+      outline:none;
+      font:inherit;
+    }
+
+    .btn,.file-label,input[type="text"],select{padding:13px 14px}
+
+    .btn{
+      cursor:pointer;
+      font-weight:800;
+      transition:.18s transform,.18s opacity,.18s box-shadow;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px)}
+    .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(255,122,0,.18), rgba(0,183,255,.14));
+      border-color:rgba(255,122,0,.35);
+    }
+    .btn.secondary{background:linear-gradient(180deg, #1d2533, #141922)}
+    .btn.good{
+      background:linear-gradient(180deg, rgba(34,212,138,.18), rgba(34,212,138,.10));
+      border-color:rgba(34,212,138,.35);
+    }
+    .btn.danger{
+      background:linear-gradient(180deg, rgba(255,70,110,.18), rgba(255,70,110,.10));
+      border-color:rgba(255,70,110,.35);
+    }
+    .btn.warn{
+      background:linear-gradient(180deg, rgba(255,176,32,.18), rgba(255,176,32,.10));
+      border-color:rgba(255,176,32,.35);
+    }
+
+    input[type=file]{display:none}
+
+    .file-label{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-weight:800;
+      text-align:center;
+    }
+
+    .mini-grid{display:grid;gap:10px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1}
+
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 0;
+      border-bottom:1px dashed rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:.92rem;
+    }
+    .kv:last-child{border-bottom:none}
+    .kv strong{color:var(--text)}
+
+    .sub{color:var(--muted);font-size:.88rem;line-height:1.45}
+    .muted{color:var(--muted)}
+    .hint{font-size:.84rem;color:var(--muted);line-height:1.5}
+    .accent{color:var(--accent)}
+    .accent2{color:var(--accent2)}
+
+    .textarea-toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.02);
+    }
+
+    textarea{
+      min-height:52vh;
+      resize:vertical;
+      padding:16px;
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:1rem;
+      line-height:1.65;
+    }
+
+    .record-center{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      border-top:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    }
+
+    .record-btn{
+      width:110px;height:110px;border-radius:50%;border:none;cursor:pointer;
+      display:grid;place-items:center;
+      font-weight:900;letter-spacing:.8px;color:#fff;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, #ff665d, #c40030);
+      box-shadow:
+        0 0 0 8px rgba(255,70,110,.08),
+        0 0 25px rgba(255,70,110,.28),
+        inset 0 -10px 20px rgba(0,0,0,.25);
+      transition:.18s transform;
+    }
+    .record-btn:hover{transform:scale(1.03)}
+    .record-btn:active{transform:scale(.98)}
+    .record-btn.recording{animation:pulse 1.2s infinite}
+
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(255,70,110,.42),0 0 26px rgba(255,70,110,.30),inset 0 -10px 20px rgba(0,0,0,.25)}
+      70%{box-shadow:0 0 0 24px rgba(255,70,110,0),0 0 30px rgba(255,70,110,.34),inset 0 -10px 20px rgba(0,0,0,.25)}
+      100%{box-shadow:0 0 0 0 rgba(255,70,110,0),0 0 26px rgba(255,70,110,.30),inset 0 -10px 20px rgba(0,0,0,.25)}
+    }
+
+    .msg{
+      display:none;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:var(--panel3);
+      line-height:1.45;
+      font-size:.93rem;
+    }
+    .msg.show{display:block}
+    .msg.info{background:rgba(0,183,255,.12);border-color:rgba(0,183,255,.25)}
+    .msg.success{background:rgba(34,212,138,.12);border-color:rgba(34,212,138,.25)}
+    .msg.error{background:rgba(255,70,110,.12);border-color:rgba(255,70,110,.28)}
+
+    .audio-card{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--panel3);
+    }
+
+    audio,video{width:100%}
+    video{max-height:260px;background:#000;border-radius:12px}
+
+    canvas{
+      width:100%;
+      height:130px;
+      display:block;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(0,183,255,.03), rgba(255,122,0,.04));
+    }
+
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{
+      flex:1;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:var(--panel3);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:800;
+    }
+    .tab.active{
+      background:linear-gradient(90deg, rgba(255,122,0,.18), rgba(0,183,255,.14));
+      border-color:rgba(255,122,0,.35);
+    }
+
+    .list{
+      display:grid;
+      gap:10px;
+      max-height:66vh;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .item{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--panel3);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .item h4{
+      margin:0;
+      font-size:.95rem;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .item pre{
+      margin:0;
+      white-space:pre-wrap;
+      color:var(--muted);
+      font-family:inherit;
+      font-size:.84rem;
+      line-height:1.5;
+      max-height:110px;
+      overflow:auto;
+    }
+    .item small{color:var(--muted)}
+    .item .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .item .actions .btn{padding:10px 12px;font-size:.86rem}
+
+    .hidden{display:none!important}
+
+    .meter-wrap{display:grid;gap:8px}
+    .meter{
+      height:12px;
+      background:#0d1118;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--line);
+    }
+    .meter > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg, var(--ok), var(--accent), var(--danger));
+      transition:width .06s linear;
+    }
+
+    @media (max-width:1180px){
+      .layout{grid-template-columns:1fr 1fr}
+      .vault-col{grid-column:1/-1}
+      textarea{min-height:38vh}
+    }
+    @media (max-width:860px){
+      .layout{grid-template-columns:1fr}
+      .controls-grid{grid-template-columns:1fr}
+      textarea{min-height:34vh}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="panel">
+      <div class="hd">
+        <div class="brand">
+          <div class="logo">R</div>
+          <div>
+            <strong>Estudio de Rap PRO+</strong>
+            <small>Mezcla beat + voz, proyectos locales y edición de letras</small>
+          </div>
+        </div>
+
+        <div class="status">
+          <span class="pill" id="engineStatus">Motor: bloqueado</span>
+          <span class="pill" id="micStatus">Mic: sin permiso</span>
+          <span class="pill" id="recStatus">Grabación: parada</span>
+        </div>
+      </div>
+
+      <div class="bd stack">
+        <div class="controls-grid">
+          <button class="btn primary full" id="unlockAudioBtn">🔓 INICIAR MOTOR DE AUDIO</button>
+
+          <label class="file-label" for="beatInput">🎵/🎬 Cargar beat o vídeo</label>
+          <input id="beatInput" type="file" accept="audio/*,video/*" />
+
+          <button class="btn secondary" id="requestMicBtn">🎙️ Activar micrófono</button>
+          <button class="btn secondary" id="playBeatBtn" disabled>▶️ Reproducir beat</button>
+          <button class="btn secondary" id="pauseBeatBtn" disabled>⏸️ Pausar beat</button>
+          <button class="btn secondary" id="stopBeatBtn" disabled>⏹️ Detener beat</button>
+
+          <button class="btn good" id="downloadWebmBtn" disabled>⬇️ Descargar mezcla</button>
+          <button class="btn good" id="downloadWavBtn" disabled>⬇️ Descargar WAV</button>
+
+          <input class="field full" id="projectName" type="text" placeholder="Nombre del proyecto (ej: Cypher 01 / Tema oscuro / Demo viernes)" />
+
+          <div class="audio-card">
+            <div class="sub" style="margin-bottom:8px">Volumen beat</div>
+            <input id="beatGainSlider" type="range" min="0" max="2" step="0.01" value="1" />
+          </div>
+
+          <div class="audio-card">
+            <div class="sub" style="margin-bottom:8px">Volumen voz</div>
+            <input id="micGainSlider" type="range" min="0" max="2" step="0.01" value="1" />
+          </div>
+
+          <div class="audio-card">
+            <div class="sub" style="margin-bottom:8px">Compresión voz</div>
+            <input id="compAmountSlider" type="range" min="0" max="100" step="1" value="55" />
+          </div>
+
+          <div class="audio-card">
+            <div class="sub" style="margin-bottom:8px">Filtro graves micro</div>
+            <input id="hpFilterSlider" type="range" min="40" max="180" step="1" value="90" />
+          </div>
+
+          <button class="btn warn full" id="saveCurrentAsProjectBtn">💾 Guardar sesión actual como proyecto</button>
+          <button class="btn secondary full" id="saveCurrentAsLetterBtn">📝 Guardar texto actual como letra</button>
+        </div>
+
+        <div id="msgBox" class="msg info show">
+          Pulsa <strong>INICIAR MOTOR DE AUDIO</strong>, luego <strong>Activar micrófono</strong>. La grabación guarda la <strong>mezcla beat + voz</strong>. Usa auriculares para que el beat no se cuele físicamente al micro.
+        </div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="textarea-toolbar">
+          <div style="flex:1;min-width:220px">
+            <strong>Letra / Editor</strong>
+            <div class="sub">Puedes escribir, leer, editar y regrabar sobre cualquier proyecto guardado.</div>
+          </div>
+          <button class="btn secondary" id="clearLyricsBtn" style="max-width:190px">🧹 Limpiar editor</button>
+        </div>
+
+        <textarea id="lyrics" placeholder="Escribe tu letra aquí...
+
+Ejemplo:
+La base cae y yo entro fino,
+micro encendido, pulso asesino..."></textarea>
+
+        <div class="record-center">
+          <button class="record-btn" id="recordBtn">REC</button>
+          <div class="sub" id="recordHelp">Pulsa para grabar la mezcla. Si hay beat cargado, quedará montado con tu voz.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="hd">
+          <h2 style="margin:0">Beat / Preview / Mezcla</h2>
+          <span class="sub">monitor en tiempo real</span>
+        </div>
+
+        <div class="bd stack">
+          <div class="audio-card">
+            <div class="kv"><span>Beat cargado</span><strong id="beatName">Ninguno</strong></div>
+            <div class="kv"><span>Tiempo beat</span><strong id="beatTime">00:00 / 00:00</strong></div>
+            <div class="kv"><span>Duración toma</span><strong id="recTime">00:00</strong></div>
+            <div class="kv"><span>Formato grabado</span><strong id="formatInfo">webm según navegador</strong></div>
+          </div>
+
+          <div class="audio-card">
+            <div id="mediaPreviewEmpty" class="muted">No hay beat cargado.</div>
+
+            <audio id="beatAudioPreview" class="hidden"></audio>
+            <video id="beatVideoPreview" playsinline class="hidden"></video>
+
+            <div class="row" style="margin-top:10px">
+              <button class="btn secondary" id="beatPlayUI">▶️ Play</button>
+              <button class="btn secondary" id="beatPauseUI">⏸️ Pause</button>
+              <button class="btn secondary" id="beatStopUI">⏹️ Stop</button>
+            </div>
+          </div>
+
+          <canvas id="waveCanvas" width="900" height="180"></canvas>
+
+          <div class="audio-card">
+            <div class="sub" style="margin-bottom:8px">Nivel micro</div>
+            <div class="meter">
+              <div id="micLevelBar"></div>
+            </div>
+          </div>
+
+          <div class="audio-card" id="lastTakeWrap">
+            <div class="muted">Todavía no hay mezcla grabada.</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel vault-col">
+        <div class="hd">
+          <h2 style="margin:0">🧰 Baúl local</h2>
+          <span class="sub">Letras y proyectos</span>
+        </div>
+
+        <div class="bd">
+          <div class="tabs">
+            <button class="tab active" id="tabProjects">Proyectos</button>
+            <button class="tab" id="tabLetters">Letras</button>
+          </div>
+
+          <div id="projectsPane" class="list"></div>
+          <div id="lettersPane" class="list hidden"></div>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+
+      const unlockAudioBtn = $("unlockAudioBtn");
+      const requestMicBtn = $("requestMicBtn");
+      const beatInput = $("beatInput");
+      const playBeatBtn = $("playBeatBtn");
+      const pauseBeatBtn = $("pauseBeatBtn");
+      const stopBeatBtn = $("stopBeatBtn");
+      const beatPlayUI = $("beatPlayUI");
+      const beatPauseUI = $("beatPauseUI");
+      const beatStopUI = $("beatStopUI");
+      const recordBtn = $("recordBtn");
+      const clearLyricsBtn = $("clearLyricsBtn");
+      const saveCurrentAsProjectBtn = $("saveCurrentAsProjectBtn");
+      const saveCurrentAsLetterBtn = $("saveCurrentAsLetterBtn");
+      const downloadWebmBtn = $("downloadWebmBtn");
+      const downloadWavBtn = $("downloadWavBtn");
+      const projectName = $("projectName");
+      const lyrics = $("lyrics");
+      const msgBox = $("msgBox");
+      const engineStatus = $("engineStatus");
+      const micStatus = $("micStatus");
+      const recStatus = $("recStatus");
+      const beatName = $("beatName");
+      const beatTime = $("beatTime");
+      const recTime = $("recTime");
+      const formatInfo = $("formatInfo");
+      const beatAudioPreview = $("beatAudioPreview");
+      const beatVideoPreview = $("beatVideoPreview");
+      const mediaPreviewEmpty = $("mediaPreviewEmpty");
+      const waveCanvas = $("waveCanvas");
+      const recordHelp = $("recordHelp");
+      const beatGainSlider = $("beatGainSlider");
+      const micGainSlider = $("micGainSlider");
+      const compAmountSlider = $("compAmountSlider");
+      const hpFilterSlider = $("hpFilterSlider");
+      const micLevelBar = $("micLevelBar");
+      const lastTakeWrap = $("lastTakeWrap");
+      const tabProjects = $("tabProjects");
+      const tabLetters = $("tabLetters");
+      const projectsPane = $("projectsPane");
+      const lettersPane = $("lettersPane");
+
+      const STORAGE_KEYS = {
+        draftLyrics: "rap_pro_draft_lyrics",
+        draftProjectName: "rap_pro_draft_project_name",
+        projects: "rap_pro_projects_v3",
+        letters: "rap_pro_letters_v3"
+      };
+
+      let audioContext = null;
+      let engineUnlocked = false;
+      let micReady = false;
+
+      let mediaStream = null;
+      let mediaRecorder = null;
+      let chunks = [];
+      let recordedBlob = null;
+      let recordedUrl = "";
+      let recordedMimeType = "audio/webm";
+
+      let analyser = null;
+      let micLevelAnalyser = null;
+      let micSourceNode = null;
+      let beatGainNode = null;
+      let micGainNode = null;
+      let mixDestination = null;
+      let drawRAF = null;
+      let levelRAF = null;
+
+      let micHighpass = null;
+      let micCompressor = null;
+
+      let beatMediaEl = null;
+      let beatType = "";
+      let beatUrl = "";
+      let beatFileName = "";
+      let beatAudioSourceNode = null;
+      let beatVideoSourceNode = null;
+
+      let recordingStart = 0;
+      let recordingTimer = null;
+
+      let currentProjectId = null;
+      let currentLetterId = null;
+
+      function showMsg(message, type = "info") {
+        msgBox.className = `msg show ${type}`;
+        msgBox.innerHTML = message;
+      }
+
+      function setPill(el, text, mode = "") {
+        el.textContent = text;
+        el.className = `pill ${mode}`.trim();
+      }
+
+      function formatSeconds(sec) {
+        if (!isFinite(sec)) return "00:00";
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
+      function uid(prefix) {
+        return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      }
+
+      function nowIso() {
+        return new Date().toISOString();
+      }
+
+      function escapeHtml(str = "") {
+        return str
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function getProjects() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.projects) || "[]"); }
+        catch { return []; }
+      }
+
+      function setProjects(list) {
+        localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(list));
+      }
+
+      function getLetters() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.letters) || "[]"); }
+        catch { return []; }
+      }
+
+      function setLetters(list) {
+        localStorage.setItem(STORAGE_KEYS.letters, JSON.stringify(list));
+      }
+
+      function saveDraftFields() {
+        localStorage.setItem(STORAGE_KEYS.draftLyrics, lyrics.value);
+        localStorage.setItem(STORAGE_KEYS.draftProjectName, projectName.value);
+      }
+
+      function updateBeatTime() {
+        if (!beatMediaEl) {
+          beatTime.textContent = "00:00 / 00:00";
+          return;
+        }
+        beatTime.textContent = `${formatSeconds(beatMediaEl.currentTime)} / ${formatSeconds(beatMediaEl.duration)}`;
+      }
+
+      function updateRecTimer() {
+        if (!recordingStart) {
+          recTime.textContent = "00:00";
+          return;
+        }
+        recTime.textContent = formatSeconds((Date.now() - recordingStart) / 1000);
+      }
+
+      function pickBestMimeType() {
+        const opts = [
+          "audio/webm;codecs=opus",
+          "audio/webm",
+          "audio/ogg;codecs=opus",
+          "audio/ogg"
+        ];
+        for (const opt of opts) {
+          if (window.MediaRecorder && MediaRecorder.isTypeSupported(opt)) return opt;
+        }
+        return "";
+      }
+
+      function ensureAudioGraph() {
+        if (!audioContext) return;
+
+        if (!mixDestination) mixDestination = audioContext.createMediaStreamDestination();
+        if (!beatGainNode) beatGainNode = audioContext.createGain();
+        if (!micGainNode) micGainNode = audioContext.createGain();
+
+        beatGainNode.gain.value = parseFloat(beatGainSlider.value || "1");
+        micGainNode.gain.value = parseFloat(micGainSlider.value || "1");
+
+        try { beatGainNode.disconnect(); } catch {}
+        try { micGainNode.disconnect(); } catch {}
+
+        beatGainNode.connect(audioContext.destination);
+        beatGainNode.connect(mixDestination);
+
+        micGainNode.connect(audioContext.destination);
+        micGainNode.connect(mixDestination);
+      }
+
+      async function unlockAudioEngine() {
+        try {
+          if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioContext.state === "suspended") await audioContext.resume();
+
+          const silent = audioContext.createBuffer(1, 1, 22050);
+          const src = audioContext.createBufferSource();
+          src.buffer = silent;
+          src.connect(audioContext.destination);
+          src.start(0);
+
+          engineUnlocked = true;
+          ensureAudioGraph();
+          setupBeatNodesIfNeeded();
+
+          setPill(engineStatus, "Motor: activo", "ok");
+          formatInfo.textContent = pickBestMimeType() || "webm";
+          showMsg("Motor de audio activado. Ya puedes dar permiso al micrófono y cargar un beat.", "success");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo iniciar el motor de audio. Prueba a pulsar de nuevo el botón.", "error");
+        }
+      }
+
+      function setupBeatNodesIfNeeded() {
+        if (!audioContext || !beatGainNode) return;
+        try {
+          if (!beatAudioSourceNode) {
+            beatAudioSourceNode = audioContext.createMediaElementSource(beatAudioPreview);
+            beatAudioSourceNode.connect(beatGainNode);
+          }
+        } catch {}
+        try {
+          if (!beatVideoSourceNode) {
+            beatVideoSourceNode = audioContext.createMediaElementSource(beatVideoPreview);
+            beatVideoSourceNode.connect(beatGainNode);
+          }
+        } catch {}
+      }
+
+      function updateMicFx() {
+        if (!micHighpass || !micCompressor) return;
+
+        micHighpass.frequency.value = parseFloat(hpFilterSlider.value || "90");
+
+        const amount = parseFloat(compAmountSlider.value || "55") / 100;
+        micCompressor.threshold.value = -10 - (amount * 20);
+        micCompressor.knee.value = 20 + (amount * 20);
+        micCompressor.ratio.value = 2 + (amount * 8);
+        micCompressor.attack.value = 0.003 + (amount * 0.01);
+        micCompressor.release.value = 0.12 + (amount * 0.15);
+      }
+
+      async function requestMic() {
+        try {
+          if (!navigator.mediaDevices?.getUserMedia) {
+            showMsg("Tu navegador no soporta getUserMedia. Usa Chrome o Brave actualizado.", "error");
+            return;
+          }
+
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            },
+            video: false
+          });
+
+          micReady = true;
+          setPill(micStatus, "Mic: permitido", "ok");
+
+          if (audioContext && !micSourceNode) {
+            micSourceNode = audioContext.createMediaStreamSource(mediaStream);
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.82;
+
+            micLevelAnalyser = audioContext.createAnalyser();
+            micLevelAnalyser.fftSize = 512;
+
+            micHighpass = audioContext.createBiquadFilter();
+            micHighpass.type = "highpass";
+
+            micCompressor = audioContext.createDynamicsCompressor();
+
+            updateMicFx();
+
+            micSourceNode.connect(analyser);
+            micSourceNode.connect(micLevelAnalyser);
+            micSourceNode.connect(micHighpass);
+            micHighpass.connect(micCompressor);
+            micCompressor.connect(micGainNode);
+          }
+
+          drawWaveform();
+          drawLevelMeter();
+          showMsg("Micrófono activado correctamente.", "success");
+        } catch (err) {
+          console.error(err);
+          let extra = "";
+          if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1" && !location.href.startsWith("file:")) {
+            extra = " Además, para el micro suele ser necesario abrir la app con HTTPS.";
+          }
+          setPill(micStatus, "Mic: bloqueado", "warn");
+          showMsg("El navegador bloqueó el micrófono. Pulsa el candado del navegador, permite el acceso al micrófono y recarga la página." + extra, "error");
+        }
+      }
+
+      function drawWaveform() {
+        const ctx = waveCanvas.getContext("2d");
+        const dataArray = analyser ? new Uint8Array(analyser.fftSize) : null;
+
+        function frame() {
+          drawRAF = requestAnimationFrame(frame);
+
+          const w = waveCanvas.width;
+          const h = waveCanvas.height;
+
+          ctx.clearRect(0, 0, w, h);
+          ctx.fillStyle = "#0d1117";
+          ctx.fillRect(0, 0, w, h);
+
+          ctx.strokeStyle = "rgba(255,255,255,.08)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, h / 2);
+          ctx.lineTo(w, h / 2);
+          ctx.stroke();
+
+          if (!analyser || !dataArray) {
+            ctx.fillStyle = "rgba(255,255,255,.45)";
+            ctx.font = "16px sans-serif";
+            ctx.fillText("Activa el micro para ver la onda", 20, h / 2 - 10);
+            return;
+          }
+
+          analyser.getByteTimeDomainData(dataArray);
+
+          const g = ctx.createLinearGradient(0, 0, w, 0);
+          g.addColorStop(0, "#ff7a00");
+          g.addColorStop(1, "#00b7ff");
+          ctx.strokeStyle = g;
+          ctx.lineWidth = 2.3;
+          ctx.beginPath();
+
+          const slice = w / dataArray.length;
+          let x = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = (v * h) / 2;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+            x += slice;
+          }
+          ctx.stroke();
+        }
+
+        if (!drawRAF) frame();
+      }
+
+      function drawLevelMeter() {
+        if (!micLevelAnalyser) return;
+        const arr = new Uint8Array(micLevelAnalyser.fftSize);
+
+        function frame() {
+          levelRAF = requestAnimationFrame(frame);
+          micLevelAnalyser.getByteTimeDomainData(arr);
+
+          let sum = 0;
+          for (let i = 0; i < arr.length; i++) {
+            const centered = (arr[i] - 128) / 128;
+            sum += centered * centered;
+          }
+          const rms = Math.sqrt(sum / arr.length);
+          const pct = Math.min(100, Math.max(0, rms * 250));
+          micLevelBar.style.width = pct + "%";
+        }
+
+        if (!levelRAF) frame();
+      }
+
+      function stopPreviewMedia() {
+        [beatAudioPreview, beatVideoPreview].forEach(el => {
+          try { el.pause(); } catch {}
+          try { el.currentTime = 0; } catch {}
+        });
+      }
+
+      function setBeatMedia(type, url, name = "Ninguno") {
+        beatType = type || "";
+        beatFileName = name || "";
+        beatMediaEl = null;
+
+        stopPreviewMedia();
+        beatAudioPreview.classList.add("hidden");
+        beatVideoPreview.classList.add("hidden");
+        mediaPreviewEmpty.classList.add("hidden");
+
+        if (!url) {
+          mediaPreviewEmpty.classList.remove("hidden");
+          beatName.textContent = "Ninguno";
+          beatTime.textContent = "00:00 / 00:00";
+          playBeatBtn.disabled = true;
+          pauseBeatBtn.disabled = true;
+          stopBeatBtn.disabled = true;
+          beatPlayUI.disabled = true;
+          beatPauseUI.disabled = true;
+          beatStopUI.disabled = true;
+          return;
+        }
+
+        if (type === "video") {
+          beatVideoPreview.src = url;
+          beatVideoPreview.classList.remove("hidden");
+          beatMediaEl = beatVideoPreview;
+        } else {
+          beatAudioPreview.src = url;
+          beatAudioPreview.classList.remove("hidden");
+          beatMediaEl = beatAudioPreview;
+        }
+
+        beatName.textContent = name || "Beat";
+        playBeatBtn.disabled = false;
+        pauseBeatBtn.disabled = false;
+        stopBeatBtn.disabled = false;
+        beatPlayUI.disabled = false;
+        beatPauseUI.disabled = false;
+        beatStopUI.disabled = false;
+
+        beatMediaEl.onloadedmetadata = updateBeatTime;
+        beatMediaEl.ontimeupdate = updateBeatTime;
+        beatMediaEl.onended = updateBeatTime;
+        updateBeatTime();
+      }
+
+      function loadBeatFromFile(file) {
+        if (!file) return;
+        if (beatUrl) URL.revokeObjectURL(beatUrl);
+        beatUrl = URL.createObjectURL(file);
+
+        const type = file.type.startsWith("video/") ? "video" : "audio";
+        setBeatMedia(type, beatUrl, file.name);
+        setupBeatNodesIfNeeded();
+
+        showMsg(`Beat cargado: ${escapeHtml(file.name)}`, "success");
+      }
+
+      async function startBeatPlayback() {
+        if (!beatMediaEl) {
+          showMsg("Primero carga un beat o vídeo.", "error");
+          return;
+        }
+        try {
+          if (audioContext?.state === "suspended") await audioContext.resume();
+          await beatMediaEl.play();
+          showMsg(`Reproduciendo ${beatType === "video" ? "vídeo" : "beat"}...`, "info");
+        } catch (err) {
+          console.error(err);
+          showMsg("El navegador bloqueó la reproducción. Pulsa antes en INICIAR MOTOR DE AUDIO.", "error");
+        }
+      }
+
+      function pauseBeatPlayback() {
+        if (!beatMediaEl) return;
+        beatMediaEl.pause();
+        updateBeatTime();
+      }
+
+      function stopBeatPlayback() {
+        if (!beatMediaEl) return;
+        beatMediaEl.pause();
+        beatMediaEl.currentTime = 0;
+        updateBeatTime();
+      }
+
+      async function startRecording() {
+        if (!engineUnlocked) {
+          showMsg("Primero pulsa INICIAR MOTOR DE AUDIO.", "error");
+          return;
+        }
+        if (!micReady || !mediaStream) {
+          showMsg("Primero activa el micrófono.", "error");
+          return;
+        }
+        if (!mixDestination) {
+          showMsg("No se pudo preparar la mezcla interna.", "error");
+          return;
+        }
+
+        try {
+          if (audioContext.state === "suspended") await audioContext.resume();
+
+          const mime = pickBestMimeType();
+          recordedMimeType = mime || "audio/webm";
+          chunks = [];
+
+          mediaRecorder = mime
+            ? new MediaRecorder(mixDestination.stream, { mimeType: mime })
+            : new MediaRecorder(mixDestination.stream);
+
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data?.size) chunks.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            recordedBlob = new Blob(chunks, { type: recordedMimeType || "audio/webm" });
+
+            if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+            recordedUrl = URL.createObjectURL(recordedBlob);
+
+            renderLastTakeCard(recordedUrl, recordedMimeType);
+            prepareDownloads();
+
+            setPill(recStatus, "Grabación: parada", "");
+            recordBtn.classList.remove("recording");
+            recordBtn.textContent = "REC";
+            recordHelp.textContent = "Toma finalizada. Puedes descargarla o guardarla como proyecto.";
+            showMsg("Grabación terminada. Ya puedes guardarla como proyecto local.", "success");
+          };
+
+          mediaRecorder.start(250);
+
+          if (beatMediaEl) {
+            try { await beatMediaEl.play(); } catch {}
+          }
+
+          recordingStart = Date.now();
+          updateRecTimer();
+          clearInterval(recordingTimer);
+          recordingTimer = setInterval(updateRecTimer, 200);
+
+          setPill(recStatus, "Grabación: en curso", "live");
+          recordBtn.classList.add("recording");
+          recordBtn.textContent = "STOP";
+          recordHelp.textContent = "Grabando la mezcla beat + voz...";
+          showMsg("Grabación iniciada. Se está capturando la mezcla completa.", "info");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo iniciar la grabación.", "error");
+        }
+      }
+
+      function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+        recordingStart = 0;
+        updateRecTimer();
+      }
+
+      function renderLastTakeCard(url, mime) {
+        lastTakeWrap.innerHTML = `
+          <div style="display:grid;gap:10px">
+            <div class="sub">Última mezcla grabada</div>
+            <audio controls src="${url}"></audio>
+            <div class="hint">Formato original grabado: ${escapeHtml(mime || "audio/webm")}</div>
+          </div>
+        `;
+      }
+
+      function downloadBlob(blob, fileName) {
+        const a = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }
+
+      function baseFileName() {
+        const raw = (projectName.value || "mezcla-rap").trim();
+        return raw.replace(/[\\/:*?"<>|]+/g, "-");
+      }
+
+      function prepareDownloads() {
+        downloadWebmBtn.disabled = !recordedBlob;
+        downloadWavBtn.disabled = !recordedBlob;
+
+        downloadWebmBtn.onclick = () => {
+          if (!recordedBlob) return;
+          const ext = recordedMimeType.includes("ogg") ? "ogg" : "webm";
+          downloadBlob(recordedBlob, `${baseFileName()}.${ext}`);
+        };
+
+        downloadWavBtn.onclick = async () => {
+          if (!recordedBlob) return;
+          try {
+            const wavBlob = await convertBlobToWav(recordedBlob);
+            downloadBlob(wavBlob, `${baseFileName()}.wav`);
+          } catch (err) {
+            console.error(err);
+            showMsg("No se pudo convertir la mezcla a WAV en este dispositivo.", "error");
+          }
+        };
+      }
+
+      async function convertBlobToWav(blob) {
+        const arrayBuffer = await blob.arrayBuffer();
+        const tmpCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await tmpCtx.decodeAudioData(arrayBuffer.slice(0));
+        const wav = audioBufferToWav(audioBuffer);
+        try { await tmpCtx.close(); } catch {}
+        return new Blob([wav], { type: "audio/wav" });
+      }
+
+      function audioBufferToWav(buffer) {
+        const numChannels = buffer.numberOfChannels;
+        const sampleRate = buffer.sampleRate;
+        const bitDepth = 16;
+        const format = 1;
+
+        let result;
+        if (numChannels === 2) {
+          result = interleave(buffer.getChannelData(0), buffer.getChannelData(1));
+        } else {
+          result = buffer.getChannelData(0);
+        }
+
+        const dataLength = result.length * 2;
+        const arrayBuffer = new ArrayBuffer(44 + dataLength);
+        const view = new DataView(arrayBuffer);
+
+        writeString(view, 0, "RIFF");
+        view.setUint32(4, 36 + dataLength, true);
+        writeString(view, 8, "WAVE");
+        writeString(view, 12, "fmt ");
+        view.setUint32(16, 16, true);
+        view.setUint16(20, format, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * bitDepth / 8, true);
+        view.setUint16(32, numChannels * bitDepth / 8, true);
+        view.setUint16(34, bitDepth, true);
+        writeString(view, 36, "data");
+        view.setUint32(40, dataLength, true);
+
+        floatTo16BitPCM(view, 44, result);
+        return arrayBuffer;
+      }
+
+      function interleave(left, right) {
+        const length = left.length + right.length;
+        const result = new Float32Array(length);
+        let i = 0;
+        let j = 0;
+        while (i < length) {
+          result[i++] = left[j];
+          result[i++] = right[j];
+          j++;
+        }
+        return result;
+      }
+
+      function floatTo16BitPCM(output, offset, input) {
+        for (let i = 0; i < input.length; i++, offset += 2) {
+          let s = Math.max(-1, Math.min(1, input[i]));
+          output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        }
+      }
+
+      function writeString(view, offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      async function blobToDataUrl(blob) {
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      async function saveCurrentAsProject() {
+        if (!recordedBlob) {
+          showMsg("Primero graba una mezcla antes de guardarla como proyecto.", "error");
+          return;
+        }
+
+        const name = (projectName.value || "Proyecto sin nombre").trim();
+
+        try {
+          const projects = getProjects();
+          const audioDataUrl = await blobToDataUrl(recordedBlob);
+
+          const project = {
+            id: currentProjectId || uid("project"),
+            name,
+            lyrics: lyrics.value,
+            audioDataUrl,
+            audioMime: recordedMimeType || "audio/webm",
+            beatName: beatFileName || "Sin beat cargado",
+            beatType,
+            durationText: recTime.textContent,
+            createdAt: currentProjectId ? (projects.find(p => p.id === currentProjectId)?.createdAt || nowIso()) : nowIso(),
+            updatedAt: nowIso()
+          };
+
+          const idx = projects.findIndex(p => p.id === project.id);
+          if (idx >= 0) projects[idx] = project;
+          else projects.unshift(project);
+
+          setProjects(projects);
+          currentProjectId = project.id;
+          renderProjects();
+          showMsg(`Proyecto guardado: <strong>${escapeHtml(name)}</strong>.`, "success");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo guardar el proyecto. Puede que el archivo sea demasiado grande para el almacenamiento del navegador.", "error");
+        }
+      }
+
+      function saveCurrentAsLetter() {
+        const content = lyrics.value.trim();
+        if (!content) {
+          showMsg("Escribe algo antes de guardar la letra.", "error");
+          return;
+        }
+
+        const letters = getLetters();
+        const name = (projectName.value || "Letra sin nombre").trim();
+
+        const letter = {
+          id: currentLetterId || uid("letter"),
+          name,
+          lyrics: lyrics.value,
+          createdAt: currentLetterId ? (letters.find(l => l.id === currentLetterId)?.createdAt || nowIso()) : nowIso(),
+          updatedAt: nowIso()
+        };
+
+        const idx = letters.findIndex(l => l.id === letter.id);
+        if (idx >= 0) letters[idx] = letter;
+        else letters.unshift(letter);
+
+        setLetters(letters);
+        currentLetterId = letter.id;
+        renderLetters();
+        showMsg(`Letra guardada: <strong>${escapeHtml(name)}</strong>.`, "success");
+      }
+
+      function loadProject(id) {
+        const project = getProjects().find(p => p.id === id);
+        if (!project) return;
+
+        currentProjectId = project.id;
+        currentLetterId = null;
+        projectName.value = project.name || "";
+        lyrics.value = project.lyrics || "";
+        saveDraftFields();
+
+        recordedBlob = null;
+        recordedMimeType = project.audioMime || "audio/webm";
+        if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+        recordedUrl = project.audioDataUrl || "";
+
+        renderLastTakeCard(project.audioDataUrl, project.audioMime || "audio/webm");
+        prepareDownloadsFromSavedProject(project);
+
+        showMsg(`Proyecto cargado: <strong>${escapeHtml(project.name)}</strong>. Puedes leer o editar la letra y volver a guardar.`, "info");
+      }
+
+      function prepareDownloadsFromSavedProject(project) {
+        downloadWebmBtn.disabled = !project.audioDataUrl;
+        downloadWavBtn.disabled = !project.audioDataUrl;
+
+        downloadWebmBtn.onclick = async () => {
+          const blob = await (await fetch(project.audioDataUrl)).blob();
+          const ext = (project.audioMime || "").includes("ogg") ? "ogg" : "webm";
+          downloadBlob(blob, `${(project.name || "proyecto").replace(/[\\/:*?"<>|]+/g,"-")}.${ext}`);
+        };
+
+        downloadWavBtn.onclick = async () => {
+          try {
+            const blob = await (await fetch(project.audioDataUrl)).blob();
+            const wavBlob = await convertBlobToWav(blob);
+            downloadBlob(wavBlob, `${(project.name || "proyecto").replace(/[\\/:*?"<>|]+/g,"-")}.wav`);
+          } catch (err) {
+            console.error(err);
+            showMsg("No se pudo convertir este proyecto a WAV.", "error");
+          }
+        };
+      }
+
+      function loadLetter(id) {
+        const letter = getLetters().find(l => l.id === id);
+        if (!letter) return;
+
+        currentLetterId = letter.id;
+        currentProjectId = null;
+        projectName.value = letter.name || "";
+        lyrics.value = letter.lyrics || "";
+        saveDraftFields();
+
+        showMsg(`Letra cargada: <strong>${escapeHtml(letter.name)}</strong>.`, "info");
+      }
+
+      function deleteProject(id) {
+        const list = getProjects().filter(p => p.id !== id);
+        setProjects(list);
+        if (currentProjectId === id) currentProjectId = null;
+        renderProjects();
+        showMsg("Proyecto eliminado.", "info");
+      }
+
+      function deleteLetter(id) {
+        const list = getLetters().filter(l => l.id !== id);
+        setLetters(list);
+        if (currentLetterId === id) currentLetterId = null;
+        renderLetters();
+        showMsg("Letra eliminada.", "info");
+      }
+
+      function renderProjects() {
+        const projects = getProjects();
+        if (!projects.length) {
+          projectsPane.innerHTML = `<div class="audio-card"><div class="muted">No hay proyectos guardados todavía.</div></div>`;
+          return;
+        }
+
+        projectsPane.innerHTML = projects.map(p => `
+          <div class="item">
+            <h4>
+              <span>${escapeHtml(p.name || "Proyecto")}</span>
+              <small>${new Date(p.updatedAt).toLocaleString("es-ES")}</small>
+            </h4>
+            <div class="sub">Beat: ${escapeHtml(p.beatName || "Sin beat")} · Toma: ${escapeHtml(p.durationText || "--:--")}</div>
+            <audio id="projectAudio_${p.id}" src="${p.audioDataUrl}"></audio>
+            <div class="row">
+              <button class="btn secondary" data-load-project="${p.id}">Abrir</button>
+              <button class="btn secondary" data-project-play="${p.id}">▶️ Play</button>
+              <button class="btn secondary" data-project-pause="${p.id}">⏸️ Pause</button>
+              <button class="btn secondary" data-project-stop="${p.id}">⏹️ Stop</button>
+              <button class="btn danger" data-delete-project="${p.id}">Borrar</button>
+            </div>
+            <pre>${escapeHtml((p.lyrics || "").slice(0, 280) || "Sin letra")}</pre>
+          </div>
+        `).join("");
+      }
+
+      function renderLetters() {
+        const letters = getLetters();
+        if (!letters.length) {
+          lettersPane.innerHTML = `<div class="audio-card"><div class="muted">No hay letras guardadas todavía.</div></div>`;
+          return;
+        }
+
+        lettersPane.innerHTML = letters.map(l => `
+          <div class="item">
+            <h4>
+              <span>${escapeHtml(l.name || "Letra")}</span>
+              <small>${new Date(l.updatedAt).toLocaleString("es-ES")}</small>
+            </h4>
+            <pre>${escapeHtml((l.lyrics || "").slice(0, 420))}</pre>
+            <div class="actions">
+              <button class="btn secondary" data-load-letter="${l.id}">Abrir</button>
+              <button class="btn danger" data-delete-letter="${l.id}">Borrar</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function switchTab(which) {
+        const showProjects = which === "projects";
+        tabProjects.classList.toggle("active", showProjects);
+        tabLetters.classList.toggle("active", !showProjects);
+        projectsPane.classList.toggle("hidden", !showProjects);
+        lettersPane.classList.toggle("hidden", showProjects);
+      }
+
+      function handleListClicks(e) {
+        const t = e.target;
+
+        const loadProjectId = t.getAttribute("data-load-project");
+        const deleteProjectId = t.getAttribute("data-delete-project");
+        const loadLetterId = t.getAttribute("data-load-letter");
+        const deleteLetterId = t.getAttribute("data-delete-letter");
+        const projectPlayId = t.getAttribute("data-project-play");
+        const projectPauseId = t.getAttribute("data-project-pause");
+        const projectStopId = t.getAttribute("data-project-stop");
+
+        if (loadProjectId) loadProject(loadProjectId);
+        if (deleteProjectId) deleteProject(deleteProjectId);
+        if (loadLetterId) loadLetter(loadLetterId);
+        if (deleteLetterId) deleteLetter(deleteLetterId);
+
+        if (projectPlayId) {
+          const el = document.getElementById(`projectAudio_${projectPlayId}`);
+          if (el) {
+            el.play().catch(() => showMsg("El navegador bloqueó la reproducción hasta una interacción del usuario.", "error"));
+          }
+        }
+
+        if (projectPauseId) {
+          const el = document.getElementById(`projectAudio_${projectPauseId}`);
+          if (el) el.pause();
+        }
+
+        if (projectStopId) {
+          const el = document.getElementById(`projectAudio_${projectStopId}`);
+          if (el) {
+            el.pause();
+            el.currentTime = 0;
+          }
+        }
+      }
+
+      unlockAudioBtn.addEventListener("click", unlockAudioEngine);
+      requestMicBtn.addEventListener("click", requestMic);
+
+      beatInput.addEventListener("change", () => {
+        const file = beatInput.files?.[0];
+        if (file) loadBeatFromFile(file);
+      });
+
+      playBeatBtn.addEventListener("click", startBeatPlayback);
+      pauseBeatBtn.addEventListener("click", pauseBeatPlayback);
+      stopBeatBtn.addEventListener("click", stopBeatPlayback);
+
+      beatPlayUI.addEventListener("click", startBeatPlayback);
+      beatPauseUI.addEventListener("click", pauseBeatPlayback);
+      beatStopUI.addEventListener("click", stopBeatPlayback);
+
+      recordBtn.addEventListener("click", async () => {
+        if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
+        else await startRecording();
+      });
+
+      clearLyricsBtn.addEventListener("click", () => {
+        lyrics.value = "";
+        currentLetterId = null;
+        saveDraftFields();
+        showMsg("Editor limpiado.", "info");
+      });
+
+      saveCurrentAsProjectBtn.addEventListener("click", saveCurrentAsProject);
+      saveCurrentAsLetterBtn.addEventListener("click", saveCurrentAsLetter);
+
+      lyrics.addEventListener("input", saveDraftFields);
+      projectName.addEventListener("input", saveDraftFields);
+
+      beatGainSlider.addEventListener("input", () => {
+        if (beatGainNode) beatGainNode.gain.value = parseFloat(beatGainSlider.value || "1");
+      });
+
+      micGainSlider.addEventListener("input", () => {
+        if (micGainNode) micGainNode.gain.value = parseFloat(micGainSlider.value || "1");
+      });
+
+      compAmountSlider.addEventListener("input", updateMicFx);
+      hpFilterSlider.addEventListener("input", updateMicFx);
+
+      tabProjects.addEventListener("click", () => switchTab("projects"));
+      tabLetters.addEventListener("click", () => switchTab("letters"));
+      projectsPane.addEventListener("click", handleListClicks);
+      lettersPane.addEventListener("click", handleListClicks);
+
+      window.addEventListener("beforeunload", () => {
+        saveDraftFields();
+        try {
+          if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+          if (beatUrl) URL.revokeObjectURL(beatUrl);
+          if (drawRAF) cancelAnimationFrame(drawRAF);
+          if (levelRAF) cancelAnimationFrame(levelRAF);
+        } catch {}
+      });
+
+      function boot() {
+        lyrics.value = localStorage.getItem(STORAGE_KEYS.draftLyrics) || "";
+        projectName.value = localStorage.getItem(STORAGE_KEYS.draftProjectName) || "";
+        renderProjects();
+        renderLetters();
+        switchTab("projects");
+        drawWaveform();
+
+        beatPlayUI.disabled = true;
+        beatPauseUI.disabled = true;
+        beatStopUI.disabled = true;
+
+        if (!window.MediaRecorder) {
+          showMsg("Tu navegador no soporta MediaRecorder. Usa Chrome o Brave actualizado.", "error");
+        } else {
+          formatInfo.textContent = pickBestMimeType() || "webm";
+        }
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
