@@ -1,0 +1,2478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta name="theme-color" content="#ff7a00">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Rap Studio Dashboard</title>
+  <meta name="theme-color" content="#ff7a00" />
+  <style>
+    :root{
+      --bg:#080b11;
+      --bg2:#0d1320;
+      --panel:#111827;
+      --panel2:#172033;
+      --panel3:#1d2940;
+      --line:#2a3750;
+      --text:#f4f7fb;
+      --muted:#96a4bb;
+      --accent:#ff7a00;
+      --accent2:#00b7ff;
+      --danger:#ff4d6d;
+      --ok:#27d98b;
+      --warn:#ffb020;
+      --shadow:0 16px 38px rgba(0,0,0,.34);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      padding:0;
+      background:
+        radial-gradient(circle at top, #182235 0%, #0c1018 42%, #07090d 100%);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    body{min-height:100vh}
+
+    .app{
+      width:min(1450px,100%);
+      margin:0 auto;
+      padding:16px;
+      display:grid;
+      gap:16px;
+    }
+
+    .top-shell{
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:16px 18px;
+      background:
+        linear-gradient(90deg, rgba(255,122,0,.10), rgba(0,183,255,.08)),
+        linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border-bottom:1px solid rgba(255,255,255,.08);
+      flex-wrap:wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .logo{
+      width:50px;
+      height:50px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:1.1rem;
+      background:conic-gradient(from 160deg, var(--accent), var(--accent2), var(--accent));
+      box-shadow:0 0 20px rgba(255,122,0,.24), 0 0 24px rgba(0,183,255,.18);
+      color:white;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:1.1rem;
+      letter-spacing:.3px;
+    }
+
+    .brand p{
+      margin:2px 0 0;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .status-wrap{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:.84rem;
+    }
+    .pill.ok{
+      background:rgba(39,217,139,.13);
+      border-color:rgba(39,217,139,.33);
+      color:white;
+    }
+    .pill.live{
+      background:rgba(255,77,109,.15);
+      border-color:rgba(255,77,109,.35);
+      color:white;
+    }
+    .pill.warn{
+      background:rgba(255,176,32,.15);
+      border-color:rgba(255,176,32,.35);
+      color:white;
+    }
+
+    .dashboard{
+      display:grid;
+      grid-template-columns:310px 1fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .sidebar{
+      display:grid;
+      gap:16px;
+      position:sticky;
+      top:12px;
+    }
+
+    .panel{
+      background:linear-gradient(180deg, rgba(255,255,255,.028), rgba(255,255,255,.014));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel-hd{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+
+    .panel-hd h2,
+    .panel-hd h3{
+      margin:0;
+      font-size:.98rem;
+    }
+
+    .panel-bd{
+      padding:16px;
+      display:grid;
+      gap:12px;
+    }
+
+    .tab-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .tab-btn{
+      width:100%;
+      text-align:left;
+      border:none;
+      border-radius:16px;
+      padding:14px 14px;
+      cursor:pointer;
+      color:var(--text);
+      background:linear-gradient(180deg, #1d2640, #141c2b);
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:800;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      transition:.18s transform,.18s border-color,.18s box-shadow;
+    }
+
+    .tab-btn:hover{transform:translateY(-1px)}
+    .tab-btn.active{
+      border-color:rgba(255,122,0,.45);
+      box-shadow:0 0 0 1px rgba(255,122,0,.18) inset;
+      background:
+        linear-gradient(90deg, rgba(255,122,0,.18), rgba(0,183,255,.12)),
+        linear-gradient(180deg, #1d2640, #141c2b);
+    }
+
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .kpi{
+      padding:12px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.07);
+    }
+
+    .kpi .label{
+      color:var(--muted);
+      font-size:.8rem;
+      margin-bottom:6px;
+    }
+
+    .kpi .value{
+      font-weight:800;
+      font-size:1rem;
+    }
+
+    .main{
+      display:grid;
+      gap:16px;
+    }
+
+    .view{display:none}
+    .view.active{display:grid; gap:16px}
+
+    .study-layout{
+      display:grid;
+      grid-template-columns:1.25fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
+
+    .editor-shell{
+      display:grid;
+      gap:0;
+    }
+
+    .editor-toolbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+    }
+
+    .toolbar-left{
+      display:grid;
+      gap:4px;
+    }
+
+    .toolbar-left .title{
+      font-weight:800;
+      font-size:1rem;
+    }
+
+    .toolbar-left .sub{
+      color:var(--muted);
+      font-size:.85rem;
+    }
+
+    textarea{
+      width:100%;
+      min-height:60vh;
+      resize:vertical;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--text);
+      padding:18px;
+      font-size:1rem;
+      line-height:1.68;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    textarea::placeholder{color:#75849a}
+
+    .btn, .file-label, input[type="text"], input[type="range"]{
+      width:100%;
+      border:none;
+      outline:none;
+      border-radius:15px;
+      color:var(--text);
+      background:linear-gradient(180deg, #1d2640, #141c2b);
+      border:1px solid rgba(255,255,255,.08);
+      font:inherit;
+    }
+
+    .btn, .file-label, input[type="text"]{
+      padding:13px 14px;
+      font-weight:800;
+    }
+
+    .btn{
+      cursor:pointer;
+      transition:.18s transform,.18s opacity,.18s box-shadow;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px)}
+    .btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+
+    .btn.primary{
+      background:
+        linear-gradient(90deg, rgba(255,122,0,.18), rgba(0,183,255,.14)),
+        linear-gradient(180deg, #1d2640, #141c2b);
+      border-color:rgba(255,122,0,.35);
+    }
+    .btn.secondary{
+      background:linear-gradient(180deg, #1d2640, #141c2b);
+    }
+    .btn.good{
+      background:linear-gradient(180deg, rgba(39,217,139,.18), rgba(39,217,139,.10));
+      border-color:rgba(39,217,139,.35);
+    }
+    .btn.warn{
+      background:linear-gradient(180deg, rgba(255,176,32,.18), rgba(255,176,32,.10));
+      border-color:rgba(255,176,32,.35);
+    }
+    .btn.danger{
+      background:linear-gradient(180deg, rgba(255,77,109,.18), rgba(255,77,109,.10));
+      border-color:rgba(255,77,109,.35);
+    }
+
+    input[type="file"]{display:none}
+
+    .file-label{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      cursor:pointer;
+    }
+
+    .control-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .full{grid-column:1/-1}
+
+    .soft-card{
+      padding:12px;
+      border-radius:16px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.07);
+    }
+
+    .soft-card .mini{
+      color:var(--muted);
+      font-size:.82rem;
+      margin-bottom:8px;
+    }
+
+    .kv{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 0;
+      border-bottom:1px dashed rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .kv:last-child{border-bottom:none}
+    .kv strong{color:var(--text)}
+
+    .player-box{
+      display:grid;
+      gap:12px;
+    }
+
+    .media-stage{
+      min-height:180px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+
+    audio,video{
+      width:100%;
+      display:block;
+    }
+
+    video{
+      max-height:260px;
+      background:#000;
+    }
+
+    .media-empty{
+      color:var(--muted);
+      padding:18px;
+      text-align:center;
+    }
+
+    .mixer{
+      display:grid;
+      gap:12px;
+    }
+
+    .mix-row{
+      display:grid;
+      gap:8px;
+    }
+
+    .mix-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      font-size:.9rem;
+    }
+
+    .mix-top span:last-child{
+      color:var(--accent2);
+      font-weight:800;
+    }
+
+    input[type="range"]{
+      appearance:none;
+      height:14px;
+      padding:0;
+      background:transparent;
+      border:none;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track{
+      height:8px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,122,0,.65), rgba(0,183,255,.65));
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      appearance:none;
+      width:20px;
+      height:20px;
+      margin-top:-6px;
+      border-radius:50%;
+      background:#fff;
+      border:2px solid var(--accent);
+      box-shadow:0 0 0 4px rgba(255,122,0,.18);
+    }
+
+    .rec-zone{
+      display:grid;
+      gap:12px;
+      justify-items:center;
+      text-align:center;
+      padding-top:6px;
+    }
+
+    .record-btn{
+      width:112px;
+      height:112px;
+      border-radius:50%;
+      border:none;
+      cursor:pointer;
+      display:grid;
+      place-items:center;
+      color:white;
+      font-weight:900;
+      letter-spacing:.8px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(255,255,255,0) 38%),
+        linear-gradient(180deg, #ff665d, #c40030);
+      box-shadow:
+        0 0 0 8px rgba(255,77,109,.08),
+        0 0 25px rgba(255,77,109,.28),
+        inset 0 -10px 20px rgba(0,0,0,.25);
+      transition:.18s transform;
+    }
+    .record-btn:hover{transform:scale(1.03)}
+    .record-btn:active{transform:scale(.98)}
+    .record-btn.recording{animation:pulse 1.2s infinite}
+
+    @keyframes pulse{
+      0%{box-shadow:0 0 0 0 rgba(255,77,109,.42),0 0 26px rgba(255,77,109,.32),inset 0 -10px 20px rgba(0,0,0,.25)}
+      70%{box-shadow:0 0 0 24px rgba(255,77,109,0),0 0 30px rgba(255,77,109,.36),inset 0 -10px 20px rgba(0,0,0,.25)}
+      100%{box-shadow:0 0 0 0 rgba(255,77,109,0),0 0 26px rgba(255,77,109,.32),inset 0 -10px 20px rgba(0,0,0,.25)}
+    }
+
+    canvas{
+      width:100%;
+      height:130px;
+      display:block;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(0,183,255,.03), rgba(255,122,0,.04));
+    }
+
+    .meter{
+      height:12px;
+      border-radius:999px;
+      overflow:hidden;
+      background:#0c1119;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .meter > div{
+      width:0%;
+      height:100%;
+      background:linear-gradient(90deg, var(--ok), var(--accent), var(--danger));
+      transition:width .06s linear;
+    }
+
+    .msg{
+      display:none;
+      padding:12px 14px;
+      border-radius:15px;
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.92rem;
+      line-height:1.45;
+    }
+    .msg.show{display:block}
+    .msg.info{background:rgba(0,183,255,.12);border-color:rgba(0,183,255,.24)}
+    .msg.success{background:rgba(39,217,139,.12);border-color:rgba(39,217,139,.24)}
+    .msg.error{background:rgba(255,77,109,.12);border-color:rgba(255,77,109,.26)}
+
+    .list{
+      display:grid;
+      gap:12px;
+    }
+
+    .project-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(290px,1fr));
+      gap:14px;
+    }
+
+    .item{
+      padding:14px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid rgba(255,255,255,.08);
+      display:grid;
+      gap:12px;
+      box-shadow:var(--shadow);
+    }
+
+    .item h4{
+      margin:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      font-size:.98rem;
+    }
+
+    .item small{
+      color:var(--muted);
+      font-weight:500;
+    }
+
+    .item pre{
+      margin:0;
+      padding:12px;
+      border-radius:14px;
+      background:rgba(255,255,255,.03);
+      color:var(--muted);
+      white-space:pre-wrap;
+      font-family:inherit;
+      font-size:.86rem;
+      line-height:1.5;
+      max-height:130px;
+      overflow:auto;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .item .actions{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:8px;
+    }
+
+    .empty-card{
+      padding:26px;
+      border-radius:18px;
+      text-align:center;
+      color:var(--muted);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .hidden{display:none!important}
+
+    @media (max-width: 1100px){
+      .dashboard{grid-template-columns:1fr}
+      .sidebar{position:static}
+      .study-layout{grid-template-columns:1fr}
+      textarea{min-height:40vh}
+    }
+
+    @media (max-width: 680px){
+      .control-grid{grid-template-columns:1fr}
+      .kpi-grid{grid-template-columns:1fr 1fr}
+      .item .actions{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="top-shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo">R</div>
+          <div>
+            <h1>Rap Studio Dashboard</h1>
+            <p>Beat + voz, proyectos locales, letras y mezcla en tiempo real</p>
+          </div>
+        </div>
+
+        <div class="status-wrap">
+          <span class="pill" id="engineStatus">Motor: bloqueado</span>
+          <span class="pill" id="micStatus">Mic: sin permiso</span>
+          <span class="pill" id="camStatus">Cámara: sin permiso</span>
+          <span class="pill" id="recStatus">Grabación: parada</span>
+        </div>
+      </div>
+
+      <div style="padding:16px">
+        <div class="dashboard">
+          <aside class="sidebar">
+            <section class="panel">
+              <div class="panel-hd">
+                <h3>Panel principal</h3>
+                <span style="color:var(--muted);font-size:.82rem">Dashboard</span>
+              </div>
+              <div class="panel-bd">
+                <div class="tab-list">
+                  <button class="tab-btn active" data-view="studyView">
+                    <span>🎙️ Estudio</span>
+                    <span>Live</span>
+                  </button>
+                  <button class="tab-btn" data-view="projectsView">
+                    <span>📀 Proyectos</span>
+                    <span id="projectCountBadge">0</span>
+                  </button>
+                  <button class="tab-btn" data-view="lettersView">
+                    <span>📝 Letras</span>
+                    <span id="letterCountBadge">0</span>
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-hd">
+                <h3>Resumen</h3>
+                <span style="color:var(--muted);font-size:.82rem">Estado</span>
+              </div>
+              <div class="panel-bd">
+                <div class="kpi-grid">
+                  <div class="kpi">
+                    <div class="label">Proyecto</div>
+                    <div class="value" id="kpiProject">Sin nombre</div>
+                  </div>
+                  <div class="kpi">
+                    <div class="label">Beat</div>
+                    <div class="value" id="kpiBeat">Ninguno</div>
+                  </div>
+                  <div class="kpi">
+                    <div class="label">Tiempo</div>
+                    <div class="value" id="kpiTime">00:00</div>
+                  </div>
+                  <div class="kpi">
+                    <div class="label">Formato</div>
+                    <div class="value" id="kpiFormat">webm</div>
+                  </div>
+                  <div class="kpi">
+                    <div class="label">Tempo</div>
+                    <div class="value" id="kpiBpm">--</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-hd">
+                <h3>Motor de audio</h3>
+                <span style="color:var(--muted);font-size:.82rem">Permisos</span>
+              </div>
+              <div class="panel-bd">
+                <button class="btn primary" id="unlockAudioBtn">🔓 INICIAR MOTOR DE AUDIO</button>
+                <button class="btn secondary" id="requestMicBtn">🎙️ Activar micrófono</button>
+                <button class="btn secondary" id="requestCameraBtn">🎥 Activar cámara (opcional, para vídeo)</button>
+                <div id="msgBox" class="msg info show">
+                  Pulsa <strong>INICIAR MOTOR DE AUDIO</strong> y luego <strong>Activar micrófono</strong>.
+                </div>
+              </div>
+            </section>
+          </aside>
+
+          <main class="main">
+            <section class="view active" id="studyView">
+              <div class="study-layout">
+                <section class="panel editor-shell">
+                  <div class="editor-toolbar">
+                    <div class="toolbar-left">
+                      <div class="title">Editor de letra</div>
+                      <div class="sub">Escribe, lee, corrige y vuelve a grabar sobre el mismo proyecto</div>
+                    </div>
+                    <div style="width:min(320px,100%)">
+                      <input type="text" id="projectName" placeholder="Nombre del proyecto" />
+                    </div>
+                  </div>
+
+                  <textarea id="lyrics" placeholder="Escribe aquí tu letra...
+
+Ejemplo:
+La base cae y yo entro fino,
+micro encendido, pulso asesino..."></textarea>
+
+                  <div style="padding:16px; border-top:1px solid rgba(255,255,255,.08); display:grid; gap:12px;">
+                    <div class="control-grid">
+                      <label class="file-label full" for="beatInput">🎵 / 🎬 Cargar beat o vídeo</label>
+                      <input id="beatInput" type="file" accept="audio/*,video/*" />
+
+                      <button class="btn secondary" id="playBeatBtn" disabled>▶️ Reproducir beat</button>
+                      <button class="btn secondary" id="pauseBeatBtn" disabled>⏸️ Pausar beat</button>
+                      <button class="btn secondary" id="stopBeatBtn" disabled>⏹️ Detener beat</button>
+
+                      <button class="btn good" id="downloadWebmBtn" disabled>⬇️ Descargar mezcla</button>
+                      <button class="btn good" id="downloadWavBtn" disabled>⬇️ Descargar WAV</button>
+
+                      <button class="btn warn full" id="saveCurrentAsProjectBtn">💾 Guardar sesión como proyecto</button>
+                      <button class="btn secondary" id="saveCurrentAsLetterBtn">📝 Guardar texto como letra</button>
+                      <button class="btn secondary" id="exportLyricsBtn">⬇️ Exportar letra .txt</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section style="display:grid; gap:16px;">
+                  <section class="panel">
+                    <div class="panel-hd">
+                      <h2>Beat / vídeo</h2>
+                      <span style="color:var(--muted);font-size:.82rem">Preview</span>
+                    </div>
+                    <div class="panel-bd">
+                      <div class="soft-card">
+                        <div class="kv"><span>Beat cargado</span><strong id="beatName">Ninguno</strong></div>
+                        <div class="kv"><span>Tiempo beat</span><strong id="beatTime">00:00 / 00:00</strong></div>
+                        <div class="kv"><span>Duración toma</span><strong id="recTime">00:00</strong></div>
+                        <div class="kv"><span>Formato</span><strong id="formatInfo">webm</strong></div>
+                      </div>
+
+                      <div class="soft-card">
+                        <div class="mini">Detector de tempo (BPM)</div>
+                        <div class="kv"><span>Tempo detectado</span><strong id="bpmValue">-- BPM</strong></div>
+                        <div class="control-grid">
+                          <button class="btn secondary" id="detectTempoBtn" disabled>🥁 Detectar tempo del beat</button>
+                          <button class="btn secondary" id="tapTempoBtn">👆 Tap tempo</button>
+                          <button class="btn secondary" id="metronomeBtn">▶️ Metrónomo</button>
+                          <input type="number" id="bpmManualInput" min="40" max="220" step="1" placeholder="BPM manual" />
+                        </div>
+                        <div id="tempoHelp" class="sub" style="color:var(--muted);font-size:.82rem;margin-top:8px;">
+                          Carga un beat y pulsa «Detectar tempo», o marca el ritmo tocando «Tap tempo» varias veces seguidas. También puedes escribir un BPM a mano y usar el metrónomo para practicar el flow.
+                        </div>
+                      </div>
+
+                      <div class="player-box">
+                        <div class="media-stage">
+                          <div id="mediaPreviewEmpty" class="media-empty">No hay beat cargado.</div>
+                          <audio id="beatAudioPreview" class="hidden"></audio>
+                          <video id="beatVideoPreview" playsinline class="hidden"></video>
+                        </div>
+
+                        <div class="control-grid">
+                          <button class="btn secondary" id="beatPlayUI" disabled>▶️ Play</button>
+                          <button class="btn secondary" id="beatPauseUI" disabled>⏸️ Pause</button>
+                          <button class="btn secondary" id="beatStopUI" disabled>⏹️ Stop</button>
+                          <button class="btn secondary" id="loopBeatBtn" disabled>🔁 Loop: OFF</button>
+                          <button class="btn secondary full" id="clearLyricsBtn">🧹 Limpiar editor</button>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="panel">
+                    <div class="panel-hd">
+                      <h2>Mezclador</h2>
+                      <span style="color:var(--muted);font-size:.82rem">Estudio</span>
+                    </div>
+                    <div class="panel-bd">
+                      <div class="mixer">
+                        <div class="mix-row">
+                          <div class="mix-top">
+                            <span>🎵 Volumen beat</span>
+                            <span id="beatGainValue">100%</span>
+                          </div>
+                          <input id="beatGainSlider" type="range" min="0" max="2" step="0.01" value="1" />
+                        </div>
+
+                        <div class="mix-row">
+                          <div class="mix-top">
+                            <span>🎙️ Volumen voz</span>
+                            <span id="micGainValue">100%</span>
+                          </div>
+                          <input id="micGainSlider" type="range" min="0" max="2" step="0.01" value="1" />
+                        </div>
+                      </div>
+
+                      <canvas id="waveCanvas" width="900" height="180"></canvas>
+
+                      <div class="soft-card">
+                        <div class="mini">Nivel del micro</div>
+                        <div class="meter">
+                          <div id="micLevelBar"></div>
+                        </div>
+                      </div>
+
+                      <div class="soft-card">
+                        <div class="mini">Cámara (opcional, para grabar en vídeo)</div>
+                        <video id="cameraPreview" autoplay muted playsinline style="width:100%;border-radius:14px;background:#000;max-height:220px;object-fit:cover;display:none"></video>
+                        <div class="control-grid" style="margin-top:10px">
+                          <button class="btn secondary full" id="includeVideoBtn" disabled>🎥 Grabar con vídeo: OFF</button>
+                        </div>
+                      </div>
+
+                      <div class="rec-zone">
+                        <button class="record-btn" id="recordBtn">REC</button>
+                        <div id="recordHelp" class="sub">Pulsa para grabar la mezcla. Si hay beat cargado, quedará montado con tu voz.</div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="panel">
+                    <div class="panel-hd">
+                      <h2>Última mezcla</h2>
+                      <span style="color:var(--muted);font-size:.82rem">Output</span>
+                    </div>
+                    <div class="panel-bd">
+                      <div id="lastTakeWrap" class="soft-card">
+                        <div class="muted">Todavía no hay mezcla grabada.</div>
+                      </div>
+                    </div>
+                  </section>
+                </section>
+              </div>
+            </section>
+
+            <section class="view" id="projectsView">
+              <section class="panel">
+                <div class="panel-hd">
+                  <h2>Proyectos guardados</h2>
+                  <span style="color:var(--muted);font-size:.82rem">Baúl local</span>
+                </div>
+                <div class="panel-bd">
+                  <div class="soft-card">
+                    <div class="mini">Copia de seguridad</div>
+                    <div class="sub" style="color:var(--muted);font-size:.82rem;margin-bottom:10px;">
+                      Todo se guarda solo en este navegador. Exporta un backup de vez en cuando para no perderlo si cambias de dispositivo o se borra la caché.
+                    </div>
+                    <div class="control-grid">
+                      <button class="btn good" id="exportBackupBtn">⬇️ Exportar backup (proyectos + letras)</button>
+                      <label class="file-label" for="importBackupInput">⬆️ Importar backup</label>
+                      <input type="file" id="importBackupInput" accept="application/json" />
+                    </div>
+                  </div>
+                  <input type="text" id="projectSearch" placeholder="🔍 Buscar proyecto por nombre..." style="margin-bottom:4px" />
+                  <div id="projectsPane" class="project-grid"></div>
+                </div>
+              </section>
+            </section>
+
+            <section class="view" id="lettersView">
+              <section class="panel">
+                <div class="panel-hd">
+                  <h2>Letras guardadas</h2>
+                  <span style="color:var(--muted);font-size:.82rem">Baúl local</span>
+                </div>
+                <div class="panel-bd">
+                  <input type="text" id="letterSearch" placeholder="🔍 Buscar letra por nombre..." style="margin-bottom:4px" />
+                  <div id="lettersPane" class="list"></div>
+                </div>
+              </section>
+            </section>
+          </main>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      const $ = (id) => document.getElementById(id);
+
+      const unlockAudioBtn = $("unlockAudioBtn");
+      const requestMicBtn = $("requestMicBtn");
+      const requestCameraBtn = $("requestCameraBtn");
+      const cameraPreview = $("cameraPreview");
+      const includeVideoBtn = $("includeVideoBtn");
+      const camStatus = $("camStatus");
+      const beatInput = $("beatInput");
+      const playBeatBtn = $("playBeatBtn");
+      const pauseBeatBtn = $("pauseBeatBtn");
+      const stopBeatBtn = $("stopBeatBtn");
+      const beatPlayUI = $("beatPlayUI");
+      const beatPauseUI = $("beatPauseUI");
+      const beatStopUI = $("beatStopUI");
+      const recordBtn = $("recordBtn");
+      const clearLyricsBtn = $("clearLyricsBtn");
+      const saveCurrentAsProjectBtn = $("saveCurrentAsProjectBtn");
+      const saveCurrentAsLetterBtn = $("saveCurrentAsLetterBtn");
+      const exportLyricsBtn = $("exportLyricsBtn");
+      const loopBeatBtn = $("loopBeatBtn");
+      const downloadWebmBtn = $("downloadWebmBtn");
+      const downloadWavBtn = $("downloadWavBtn");
+      const projectName = $("projectName");
+      const lyrics = $("lyrics");
+      const msgBox = $("msgBox");
+
+      const engineStatus = $("engineStatus");
+      const micStatus = $("micStatus");
+      const recStatus = $("recStatus");
+
+      const beatName = $("beatName");
+      const beatTime = $("beatTime");
+      const recTime = $("recTime");
+      const formatInfo = $("formatInfo");
+      const kpiProject = $("kpiProject");
+      const kpiBeat = $("kpiBeat");
+      const kpiTime = $("kpiTime");
+      const kpiFormat = $("kpiFormat");
+      const kpiBpm = $("kpiBpm");
+
+      const detectTempoBtn = $("detectTempoBtn");
+      const tapTempoBtn = $("tapTempoBtn");
+      const bpmValue = $("bpmValue");
+      const tempoHelp = $("tempoHelp");
+      const metronomeBtn = $("metronomeBtn");
+      const bpmManualInput = $("bpmManualInput");
+
+      const beatAudioPreview = $("beatAudioPreview");
+      const beatVideoPreview = $("beatVideoPreview");
+      const mediaPreviewEmpty = $("mediaPreviewEmpty");
+      const waveCanvas = $("waveCanvas");
+      const recordHelp = $("recordHelp");
+      const beatGainSlider = $("beatGainSlider");
+      const micGainSlider = $("micGainSlider");
+      const beatGainValue = $("beatGainValue");
+      const micGainValue = $("micGainValue");
+      const micLevelBar = $("micLevelBar");
+      const lastTakeWrap = $("lastTakeWrap");
+
+      const projectsPane = $("projectsPane");
+      const lettersPane = $("lettersPane");
+      const projectSearch = $("projectSearch");
+      const letterSearch = $("letterSearch");
+      const projectCountBadge = $("projectCountBadge");
+      const letterCountBadge = $("letterCountBadge");
+      const exportBackupBtn = $("exportBackupBtn");
+      const importBackupInput = $("importBackupInput");
+
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      const views = document.querySelectorAll(".view");
+
+      const STORAGE_KEYS = {
+        draftLyrics: "rap_dashboard_draft_lyrics",
+        draftProjectName: "rap_dashboard_draft_project_name",
+        projects: "rap_dashboard_projects_v1",
+        letters: "rap_dashboard_letters_v1"
+      };
+
+      let audioContext = null;
+      let engineUnlocked = false;
+      let micReady = false;
+
+      let mediaStream = null;
+      let mediaRecorder = null;
+      let chunks = [];
+      let recordedBlob = null;
+      let recordedUrl = "";
+      let recordedMimeType = "audio/webm";
+
+      let cameraStream = null;
+      let cameraReady = false;
+      let includeVideo = false;
+
+      let analyser = null;
+      let micLevelAnalyser = null;
+      let micSourceNode = null;
+      let beatGainNode = null;
+      let micGainNode = null;
+      let mixDestination = null;
+      let beatAudioSourceNode = null;
+      let beatVideoSourceNode = null;
+
+      let beatMediaEl = null;
+      let beatType = "";
+      let beatUrl = "";
+      let beatFileName = "";
+      let beatFile = null;
+
+      let drawRAF = null;
+      let levelRAF = null;
+      let recordingStart = 0;
+      let recordingTimer = null;
+
+      let currentProjectId = null;
+      let currentLetterId = null;
+
+      let beatLoopEnabled = false;
+      let projectFilter = "";
+      let letterFilter = "";
+
+      let currentBpm = null;
+      let tapTimes = [];
+      let tapResetTimeout = null;
+
+      let metronomeOn = false;
+      let metronomeSchedulerId = null;
+      let nextClickTime = 0;
+      let metronomeBeatCount = 0;
+
+      function showMsg(message, type = "info") {
+        msgBox.className = `msg show ${type}`;
+        msgBox.innerHTML = message;
+      }
+
+      function setPill(el, text, mode = "") {
+        el.textContent = text;
+        el.className = `pill ${mode}`.trim();
+      }
+
+      function escapeHtml(str = "") {
+        return str
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function formatSeconds(sec) {
+        if (!isFinite(sec)) return "00:00";
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+      }
+
+      function nowIso() {
+        return new Date().toISOString();
+      }
+
+      function uid(prefix) {
+        return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+      }
+
+      function getProjects() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.projects) || "[]"); }
+        catch { return []; }
+      }
+
+      function setProjects(list) {
+        localStorage.setItem(STORAGE_KEYS.projects, JSON.stringify(list));
+        updateBadges();
+      }
+
+      function getLetters() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.letters) || "[]"); }
+        catch { return []; }
+      }
+
+      function setLetters(list) {
+        localStorage.setItem(STORAGE_KEYS.letters, JSON.stringify(list));
+        updateBadges();
+      }
+
+      function updateBadges() {
+        projectCountBadge.textContent = String(getProjects().length);
+        letterCountBadge.textContent = String(getLetters().length);
+      }
+
+      function saveDraftFields() {
+        localStorage.setItem(STORAGE_KEYS.draftLyrics, lyrics.value);
+        localStorage.setItem(STORAGE_KEYS.draftProjectName, projectName.value);
+        updateHeaderKpis();
+      }
+
+      function updateHeaderKpis() {
+        kpiProject.textContent = (projectName.value || "Sin nombre").slice(0, 18);
+        kpiBeat.textContent = beatFileName ? beatFileName.slice(0, 18) : "Ninguno";
+        kpiTime.textContent = recTime.textContent || "00:00";
+        kpiFormat.textContent = (formatInfo.textContent || "webm").slice(0, 10);
+        kpiBpm.textContent = currentBpm ? `${currentBpm}` : "--";
+      }
+
+      function switchView(viewId) {
+        tabButtons.forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.view === viewId);
+        });
+        views.forEach(v => {
+          v.classList.toggle("active", v.id === viewId);
+        });
+      }
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => switchView(btn.dataset.view));
+      });
+
+      function pickBestMimeType() {
+        const opts = [
+          "audio/webm;codecs=opus",
+          "audio/webm",
+          "audio/ogg;codecs=opus",
+          "audio/ogg"
+        ];
+        for (const opt of opts) {
+          if (window.MediaRecorder && MediaRecorder.isTypeSupported(opt)) return opt;
+        }
+        return "";
+      }
+
+      function pickBestVideoMimeType() {
+        const opts = [
+          "video/webm;codecs=vp9,opus",
+          "video/webm;codecs=vp8,opus",
+          "video/webm"
+        ];
+        for (const opt of opts) {
+          if (window.MediaRecorder && MediaRecorder.isTypeSupported(opt)) return opt;
+        }
+        return "";
+      }
+
+      function ensureAudioGraph() {
+        if (!audioContext) return;
+
+        if (!mixDestination) mixDestination = audioContext.createMediaStreamDestination();
+        if (!beatGainNode) beatGainNode = audioContext.createGain();
+        if (!micGainNode) micGainNode = audioContext.createGain();
+
+        beatGainNode.gain.value = parseFloat(beatGainSlider.value || "1");
+        micGainNode.gain.value = parseFloat(micGainSlider.value || "1");
+
+        try { beatGainNode.disconnect(); } catch {}
+        try { micGainNode.disconnect(); } catch {}
+
+        beatGainNode.connect(audioContext.destination);
+        beatGainNode.connect(mixDestination);
+
+        micGainNode.connect(audioContext.destination);
+        micGainNode.connect(mixDestination);
+      }
+
+      async function unlockAudioEngine() {
+        try {
+          if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioContext.state === "suspended") {
+            await audioContext.resume();
+          }
+
+          const silent = audioContext.createBuffer(1, 1, 22050);
+          const src = audioContext.createBufferSource();
+          src.buffer = silent;
+          src.connect(audioContext.destination);
+          src.start(0);
+
+          engineUnlocked = true;
+          ensureAudioGraph();
+          setupBeatNodesIfNeeded();
+
+          setPill(engineStatus, "Motor: activo", "ok");
+          formatInfo.textContent = pickBestMimeType() || "webm";
+          updateHeaderKpis();
+          showMsg("Motor de audio activado. Ya puedes activar el micrófono y cargar un beat.", "success");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo iniciar el motor de audio.", "error");
+        }
+      }
+
+      function setupBeatNodesIfNeeded() {
+        if (!audioContext || !beatGainNode) return;
+
+        try {
+          if (!beatAudioSourceNode) {
+            beatAudioSourceNode = audioContext.createMediaElementSource(beatAudioPreview);
+            beatAudioSourceNode.connect(beatGainNode);
+          }
+        } catch {}
+
+        try {
+          if (!beatVideoSourceNode) {
+            beatVideoSourceNode = audioContext.createMediaElementSource(beatVideoPreview);
+            beatVideoSourceNode.connect(beatGainNode);
+          }
+        } catch {}
+      }
+
+      async function requestCamera() {
+        try {
+          if (!navigator.mediaDevices?.getUserMedia) {
+            showMsg("Tu navegador no soporta acceso a la cámara.", "error");
+            return;
+          }
+
+          cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "user" },
+            audio: false
+          });
+
+          cameraReady = true;
+          cameraPreview.srcObject = cameraStream;
+          cameraPreview.style.display = "block";
+
+          setPill(camStatus, "Cámara: permitida", "ok");
+
+          includeVideo = true;
+          includeVideoBtn.disabled = false;
+          includeVideoBtn.textContent = "🎥 Grabar con vídeo: ON";
+          includeVideoBtn.classList.add("good");
+
+          showMsg("Cámara activada. La próxima grabación incluirá vídeo (puedes desactivarlo abajo si solo quieres audio).", "success");
+        } catch (err) {
+          console.error(err);
+          setPill(camStatus, "Cámara: bloqueada", "warn");
+          showMsg("El navegador bloqueó la cámara. Permítela desde el candado de la URL y recarga.", "error");
+        }
+      }
+
+      function toggleIncludeVideo() {
+        if (!cameraReady) return;
+        includeVideo = !includeVideo;
+        includeVideoBtn.textContent = includeVideo ? "🎥 Grabar con vídeo: ON" : "🎥 Grabar con vídeo: OFF";
+        includeVideoBtn.classList.toggle("good", includeVideo);
+      }
+
+      function stopCameraTracks() {
+        if (cameraStream) {
+          cameraStream.getTracks().forEach(t => { try { t.stop(); } catch {} });
+        }
+      }
+
+      async function requestMic() {
+        try {
+          if (!navigator.mediaDevices?.getUserMedia) {
+            showMsg("Tu navegador no soporta getUserMedia.", "error");
+            return;
+          }
+
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            },
+            video: false
+          });
+
+          micReady = true;
+          setPill(micStatus, "Mic: permitido", "ok");
+
+          if (audioContext && !micSourceNode) {
+            micSourceNode = audioContext.createMediaStreamSource(mediaStream);
+
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048;
+            analyser.smoothingTimeConstant = 0.82;
+
+            micLevelAnalyser = audioContext.createAnalyser();
+            micLevelAnalyser.fftSize = 512;
+
+            micSourceNode.connect(analyser);
+            micSourceNode.connect(micLevelAnalyser);
+            micSourceNode.connect(micGainNode);
+          }
+
+          drawWaveform();
+          drawLevelMeter();
+          showMsg("Micrófono activado correctamente.", "success");
+        } catch (err) {
+          console.error(err);
+          setPill(micStatus, "Mic: bloqueado", "warn");
+          showMsg("El navegador bloqueó el micrófono. Permítelo desde el candado de la URL y recarga.", "error");
+        }
+      }
+
+      function drawWaveform() {
+        const ctx = waveCanvas.getContext("2d");
+        const dataArray = analyser ? new Uint8Array(analyser.fftSize) : null;
+
+        function frame() {
+          drawRAF = requestAnimationFrame(frame);
+          const w = waveCanvas.width;
+          const h = waveCanvas.height;
+
+          ctx.clearRect(0,0,w,h);
+          ctx.fillStyle = "#0d1117";
+          ctx.fillRect(0,0,w,h);
+
+          ctx.strokeStyle = "rgba(255,255,255,.08)";
+          ctx.beginPath();
+          ctx.moveTo(0,h/2);
+          ctx.lineTo(w,h/2);
+          ctx.stroke();
+
+          if (!analyser || !dataArray) {
+            ctx.fillStyle = "rgba(255,255,255,.45)";
+            ctx.font = "16px sans-serif";
+            ctx.fillText("Activa el micro para ver la onda", 20, h/2 - 10);
+            return;
+          }
+
+          analyser.getByteTimeDomainData(dataArray);
+
+          const gradient = ctx.createLinearGradient(0,0,w,0);
+          gradient.addColorStop(0, "#ff7a00");
+          gradient.addColorStop(1, "#00b7ff");
+
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 2.4;
+          ctx.beginPath();
+
+          const slice = w / dataArray.length;
+          let x = 0;
+
+          for (let i=0;i<dataArray.length;i++) {
+            const v = dataArray[i] / 128.0;
+            const y = v * h / 2;
+            if (i === 0) ctx.moveTo(x,y);
+            else ctx.lineTo(x,y);
+            x += slice;
+          }
+          ctx.stroke();
+        }
+
+        if (!drawRAF) frame();
+      }
+
+      function drawLevelMeter() {
+        if (!micLevelAnalyser) return;
+        const arr = new Uint8Array(micLevelAnalyser.fftSize);
+
+        function frame() {
+          levelRAF = requestAnimationFrame(frame);
+          micLevelAnalyser.getByteTimeDomainData(arr);
+
+          let sum = 0;
+          for (let i=0;i<arr.length;i++) {
+            const centered = (arr[i] - 128) / 128;
+            sum += centered * centered;
+          }
+          const rms = Math.sqrt(sum / arr.length);
+          const pct = Math.min(100, Math.max(0, rms * 250));
+          micLevelBar.style.width = pct + "%";
+        }
+
+        if (!levelRAF) frame();
+      }
+
+      function stopPreviewMedia() {
+        [beatAudioPreview, beatVideoPreview].forEach(el => {
+          try { el.pause(); } catch {}
+          try { el.currentTime = 0; } catch {}
+        });
+      }
+
+      function updateBeatTime() {
+        if (!beatMediaEl) {
+          beatTime.textContent = "00:00 / 00:00";
+          return;
+        }
+        beatTime.textContent = `${formatSeconds(beatMediaEl.currentTime)} / ${formatSeconds(beatMediaEl.duration)}`;
+      }
+
+      function updateRecTimer() {
+        if (!recordingStart) {
+          recTime.textContent = "00:00";
+          updateHeaderKpis();
+          return;
+        }
+        recTime.textContent = formatSeconds((Date.now() - recordingStart) / 1000);
+        updateHeaderKpis();
+      }
+
+      // ---------- Detector de tempo (BPM) ----------
+
+      function setBpm(bpm, source) {
+        currentBpm = bpm || null;
+        bpmValue.textContent = bpm ? `${bpm} BPM` : "-- BPM";
+        if (bpmManualInput && source !== "manual") bpmManualInput.value = bpm || "";
+        updateHeaderKpis();
+
+        if (bpm) {
+          tempoHelp.textContent = source === "tap"
+            ? `Tempo marcado a mano: ${bpm} BPM.`
+            : `Tempo detectado automáticamente: ${bpm} BPM (puede ser el doble o la mitad del real, revísalo de oído).`;
+        }
+      }
+
+      function resetBpm() {
+        setBpm(null);
+        tempoHelp.textContent = "Carga un beat y pulsa «Detectar tempo», o marca el ritmo tocando «Tap tempo» varias veces seguidas.";
+      }
+
+      // Análisis por energía: detecta golpes (kicks/onsets) comparando la energía
+      // de bloques cortos de audio contra la media local, y convierte los
+      // intervalos entre golpes en candidatos de BPM.
+      function computeBpmFromBuffer(audioBuffer) {
+        const sampleRate = audioBuffer.sampleRate;
+        const numChannels = audioBuffer.numberOfChannels;
+
+        let data;
+        if (numChannels > 1) {
+          const ch0 = audioBuffer.getChannelData(0);
+          const ch1 = audioBuffer.getChannelData(1);
+          data = new Float32Array(ch0.length);
+          for (let i = 0; i < ch0.length; i++) data[i] = (ch0[i] + ch1[i]) / 2;
+        } else {
+          data = audioBuffer.getChannelData(0);
+        }
+
+        // Analiza como máximo los primeros 60s para que vaya rápido
+        const maxSamples = Math.min(data.length, sampleRate * 60);
+
+        const blockSize = 1024;
+        const numBlocks = Math.floor(maxSamples / blockSize);
+        if (numBlocks < 20) return null;
+
+        const energies = new Float32Array(numBlocks);
+        for (let b = 0; b < numBlocks; b++) {
+          let sum = 0;
+          const start = b * blockSize;
+          for (let i = 0; i < blockSize; i++) {
+            const s = data[start + i];
+            sum += s * s;
+          }
+          energies[b] = sum;
+        }
+
+        const blockDuration = blockSize / sampleRate;
+        const historyBlocks = Math.max(4, Math.round(1 / blockDuration));
+        const minGapSeconds = 60 / 220; // no permite más de ~220 BPM entre golpes
+
+        const onsetTimes = [];
+        let lastOnsetTime = -Infinity;
+
+        for (let b = 0; b < numBlocks; b++) {
+          const start = Math.max(0, b - historyBlocks);
+          let localSum = 0;
+          let count = 0;
+          for (let k = start; k < b; k++) { localSum += energies[k]; count++; }
+          const localAvg = count > 0 ? localSum / count : 0;
+
+          const threshold = localAvg * 1.4 + 1e-7;
+          const time = b * blockDuration;
+
+          if (energies[b] > threshold && energies[b] > 1e-6 && (time - lastOnsetTime) > minGapSeconds) {
+            onsetTimes.push(time);
+            lastOnsetTime = time;
+          }
+        }
+
+        if (onsetTimes.length < 4) return null;
+
+        const bpmCandidates = [];
+        for (let i = 1; i < onsetTimes.length; i++) {
+          const interval = onsetTimes[i] - onsetTimes[i - 1];
+          if (interval <= 0) continue;
+          let bpm = 60 / interval;
+          // normaliza a un rango típico de rap/hip-hop (70-180)
+          while (bpm < 70) bpm *= 2;
+          while (bpm > 180) bpm /= 2;
+          bpmCandidates.push(bpm);
+        }
+
+        if (!bpmCandidates.length) return null;
+
+        const bins = {};
+        bpmCandidates.forEach(bpm => {
+          const rounded = Math.round(bpm);
+          bins[rounded] = (bins[rounded] || 0) + 1;
+        });
+
+        let bestBpm = null;
+        let bestCount = 0;
+        Object.keys(bins).forEach(k => {
+          if (bins[k] > bestCount) { bestCount = bins[k]; bestBpm = parseInt(k, 10); }
+        });
+
+        if (!bestBpm) return null;
+
+        const near = bpmCandidates.filter(b => Math.abs(b - bestBpm) <= 3);
+        const avg = near.reduce((a, b) => a + b, 0) / near.length;
+
+        return Math.round(avg);
+      }
+
+      async function detectTempoFromBeat() {
+        if (!beatFile) {
+          showMsg("Primero carga un beat o vídeo para poder analizar su tempo.", "error");
+          return;
+        }
+
+        detectTempoBtn.disabled = true;
+        const originalLabel = detectTempoBtn.textContent;
+        detectTempoBtn.textContent = "🥁 Analizando...";
+        showMsg("Analizando el tempo del beat, esto puede tardar unos segundos...", "info");
+
+        let tmpCtx = null;
+        try {
+          const arrayBuffer = await beatFile.arrayBuffer();
+          tmpCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const audioBuffer = await tmpCtx.decodeAudioData(arrayBuffer.slice(0));
+          const bpm = computeBpmFromBuffer(audioBuffer);
+
+          if (bpm) {
+            setBpm(bpm, "auto");
+            showMsg(`Tempo detectado: <strong>${bpm} BPM</strong>. Es una estimación automática: si suena al doble o a la mitad de rápido, es normal, algunos ritmos se detectan en su octava vecina.`, "success");
+          } else {
+            showMsg("No se pudo detectar un tempo claro en este beat. Prueba a usar «Tap tempo» marcando el ritmo con el dedo.", "error");
+          }
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo analizar el audio de este archivo (formato no compatible con el decodificador). Prueba con «Tap tempo».", "error");
+        } finally {
+          if (tmpCtx) { try { await tmpCtx.close(); } catch {} }
+          detectTempoBtn.disabled = !beatFile;
+          detectTempoBtn.textContent = originalLabel;
+        }
+      }
+
+      function handleTapTempo() {
+        const now = performance.now();
+
+        if (tapResetTimeout) clearTimeout(tapResetTimeout);
+
+        if (tapTimes.length && (now - tapTimes[tapTimes.length - 1]) > 2000) {
+          tapTimes = [];
+        }
+
+        tapTimes.push(now);
+        if (tapTimes.length > 8) tapTimes.shift();
+
+        if (tapTimes.length >= 2) {
+          const intervals = [];
+          for (let i = 1; i < tapTimes.length; i++) intervals.push(tapTimes[i] - tapTimes[i - 1]);
+          const avgMs = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+          const bpm = Math.round(60000 / avgMs);
+          setBpm(bpm, "tap");
+          tapTempoBtn.textContent = `👆 Tap tempo (${bpm} BPM)`;
+        } else {
+          tapTempoBtn.textContent = "👆 Tap tempo (sigue tocando...)";
+        }
+
+        tapResetTimeout = setTimeout(() => {
+          tapTempoBtn.textContent = "👆 Tap tempo";
+          tapTimes = [];
+        }, 2500);
+      }
+
+      // ---------- Metrónomo (sincronizado al BPM detectado o manual) ----------
+
+      function playMetronomeClick(time, accent) {
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.frequency.value = accent ? 1500 : 900;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(0.5, time + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start(time);
+        osc.stop(time + 0.08);
+      }
+
+      function metronomeScheduler() {
+        const lookaheadSeconds = 0.12;
+        const bpm = currentBpm && currentBpm > 0 ? currentBpm : 90;
+        const secondsPerBeat = 60 / bpm;
+
+        while (nextClickTime < audioContext.currentTime + lookaheadSeconds) {
+          const accent = metronomeBeatCount % 4 === 0;
+          playMetronomeClick(nextClickTime, accent);
+          nextClickTime += secondsPerBeat;
+          metronomeBeatCount++;
+        }
+      }
+
+      async function startMetronome() {
+        if (!engineUnlocked || !audioContext) {
+          showMsg("Primero pulsa INICIAR MOTOR DE AUDIO para poder usar el metrónomo.", "error");
+          return;
+        }
+        if (audioContext.state === "suspended") await audioContext.resume();
+        if (metronomeOn) return;
+
+        if (!currentBpm) {
+          setBpm(90, "manual");
+          bpmManualInput.value = "90";
+          showMsg("No hay un BPM detectado todavía, el metrónomo arranca a 90 BPM por defecto. Puedes cambiarlo en el campo «BPM manual».", "info");
+        }
+
+        metronomeOn = true;
+        metronomeBeatCount = 0;
+        nextClickTime = audioContext.currentTime + 0.1;
+        metronomeSchedulerId = setInterval(metronomeScheduler, 25);
+
+        metronomeBtn.textContent = "⏹️ Parar metrónomo";
+        metronomeBtn.classList.add("warn");
+      }
+
+      function stopMetronome() {
+        metronomeOn = false;
+        if (metronomeSchedulerId) clearInterval(metronomeSchedulerId);
+        metronomeSchedulerId = null;
+
+        metronomeBtn.textContent = "▶️ Metrónomo";
+        metronomeBtn.classList.remove("warn");
+      }
+
+      function toggleMetronome() {
+        if (metronomeOn) stopMetronome();
+        else startMetronome();
+      }
+
+      function handleManualBpmChange() {
+        const val = parseInt(bpmManualInput.value, 10);
+        if (!val || val < 40 || val > 220) return;
+        setBpm(val, "manual");
+      }
+
+      // ---------- Fin detector de tempo y metrónomo ----------
+
+      function toggleBeatLoop() {
+        beatLoopEnabled = !beatLoopEnabled;
+        if (beatMediaEl) beatMediaEl.loop = beatLoopEnabled;
+        loopBeatBtn.textContent = beatLoopEnabled ? "🔁 Loop: ON" : "🔁 Loop: OFF";
+        loopBeatBtn.classList.toggle("good", beatLoopEnabled);
+      }
+
+      function exportLyricsAsTxt() {
+        const content = lyrics.value || "";
+        if (!content.trim()) {
+          showMsg("No hay texto en el editor para exportar.", "error");
+          return;
+        }
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        downloadBlob(blob, `${baseFileName()}.txt`);
+        showMsg("Letra exportada como archivo .txt.", "success");
+      }
+
+      // ---------- Cuenta atrás antes de grabar ----------
+
+      function playCountdownBeep(time, accent) {
+        if (!audioContext) return;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+
+        osc.frequency.value = accent ? 1200 : 800;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(0.5, time + 0.006);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.14);
+
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.start(time);
+        osc.stop(time + 0.16);
+      }
+
+      function delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      async function beginRecordingWithCountdown() {
+        if (!engineUnlocked || !audioContext) {
+          showMsg("Primero pulsa INICIAR MOTOR DE AUDIO.", "error");
+          return;
+        }
+        if (!micReady || !mediaStream) {
+          showMsg("Primero activa el micrófono.", "error");
+          return;
+        }
+        if (audioContext.state === "suspended") await audioContext.resume();
+
+        recordBtn.disabled = true;
+        for (let n = 3; n >= 1; n--) {
+          recordHelp.textContent = `Preparando la toma... ${n}`;
+          playCountdownBeep(audioContext.currentTime + 0.02, n === 1);
+          await delay(700);
+        }
+        recordBtn.disabled = false;
+        await startRecording();
+      }
+
+      // ---------- Fin cuenta atrás ----------
+
+      function setBeatMedia(type, url, name="Ninguno") {
+        beatType = type || "";
+        beatFileName = name || "";
+        beatMediaEl = null;
+
+        stopPreviewMedia();
+        beatAudioPreview.classList.add("hidden");
+        beatVideoPreview.classList.add("hidden");
+        mediaPreviewEmpty.classList.add("hidden");
+
+        if (!url) {
+          mediaPreviewEmpty.classList.remove("hidden");
+          beatName.textContent = "Ninguno";
+          beatTime.textContent = "00:00 / 00:00";
+          playBeatBtn.disabled = true;
+          pauseBeatBtn.disabled = true;
+          stopBeatBtn.disabled = true;
+          beatPlayUI.disabled = true;
+          beatPauseUI.disabled = true;
+          beatStopUI.disabled = true;
+          detectTempoBtn.disabled = true;
+          loopBeatBtn.disabled = true;
+          updateHeaderKpis();
+          return;
+        }
+
+        if (type === "video") {
+          beatVideoPreview.src = url;
+          beatVideoPreview.classList.remove("hidden");
+          beatMediaEl = beatVideoPreview;
+        } else {
+          beatAudioPreview.src = url;
+          beatAudioPreview.classList.remove("hidden");
+          beatMediaEl = beatAudioPreview;
+        }
+
+        beatMediaEl.loop = beatLoopEnabled;
+
+        beatName.textContent = name || "Beat";
+        playBeatBtn.disabled = false;
+        pauseBeatBtn.disabled = false;
+        stopBeatBtn.disabled = false;
+        beatPlayUI.disabled = false;
+        beatPauseUI.disabled = false;
+        beatStopUI.disabled = false;
+        detectTempoBtn.disabled = false;
+        loopBeatBtn.disabled = false;
+
+        beatMediaEl.onloadedmetadata = updateBeatTime;
+        beatMediaEl.ontimeupdate = updateBeatTime;
+        beatMediaEl.onended = updateBeatTime;
+
+        updateBeatTime();
+        updateHeaderKpis();
+      }
+
+      function loadBeatFromFile(file) {
+        if (!file) return;
+
+        if (beatUrl) URL.revokeObjectURL(beatUrl);
+        beatUrl = URL.createObjectURL(file);
+        beatFile = file;
+
+        const type = file.type.startsWith("video/") ? "video" : "audio";
+        setBeatMedia(type, beatUrl, file.name);
+        setupBeatNodesIfNeeded();
+        resetBpm();
+
+        showMsg(`Beat cargado: ${escapeHtml(file.name)}. Puedes pulsar «Detectar tempo» para estimar el BPM.`, "success");
+      }
+
+      async function startBeatPlayback() {
+        if (!beatMediaEl) {
+          showMsg("Primero carga un beat o vídeo.", "error");
+          return;
+        }
+        try {
+          if (audioContext?.state === "suspended") await audioContext.resume();
+          await beatMediaEl.play();
+          showMsg(`Reproduciendo ${beatType === "video" ? "vídeo" : "beat"}...`, "info");
+        } catch (err) {
+          console.error(err);
+          showMsg("El navegador bloqueó la reproducción. Pulsa antes en INICIAR MOTOR DE AUDIO.", "error");
+        }
+      }
+
+      function pauseBeatPlayback() {
+        if (!beatMediaEl) return;
+        beatMediaEl.pause();
+        updateBeatTime();
+      }
+
+      function stopBeatPlayback() {
+        if (!beatMediaEl) return;
+        beatMediaEl.pause();
+        beatMediaEl.currentTime = 0;
+        updateBeatTime();
+      }
+
+      async function startRecording() {
+        if (!engineUnlocked) {
+          showMsg("Primero pulsa INICIAR MOTOR DE AUDIO.", "error");
+          return;
+        }
+        if (!micReady || !mediaStream) {
+          showMsg("Primero activa el micrófono.", "error");
+          return;
+        }
+        if (!mixDestination) {
+          showMsg("No se pudo preparar la mezcla interna.", "error");
+          return;
+        }
+
+        try {
+          if (audioContext.state === "suspended") await audioContext.resume();
+
+          const useVideo = includeVideo && cameraReady && !!cameraStream;
+          const mime = useVideo ? pickBestVideoMimeType() : pickBestMimeType();
+          recordedMimeType = mime || (useVideo ? "video/webm" : "audio/webm");
+          chunks = [];
+
+          const recordStream = useVideo
+            ? new MediaStream([
+                ...cameraStream.getVideoTracks(),
+                ...mixDestination.stream.getAudioTracks()
+              ])
+            : mixDestination.stream;
+
+          mediaRecorder = mime
+            ? new MediaRecorder(recordStream, { mimeType: mime })
+            : new MediaRecorder(recordStream);
+
+          mediaRecorder.ondataavailable = (e) => {
+            if (e.data?.size) chunks.push(e.data);
+          };
+
+          mediaRecorder.onstop = async () => {
+            recordedBlob = new Blob(chunks, { type: recordedMimeType || "audio/webm" });
+
+            if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+            recordedUrl = URL.createObjectURL(recordedBlob);
+
+            renderLastTakeCard(recordedUrl, recordedMimeType);
+            prepareDownloads();
+
+            setPill(recStatus, "Grabación: parada", "");
+            recordBtn.classList.remove("recording");
+            recordBtn.textContent = "REC";
+            recordHelp.textContent = "Toma finalizada. Puedes descargarla o guardarla como proyecto.";
+            showMsg("Grabación terminada. Ya puedes guardarla como proyecto local.", "success");
+          };
+
+          mediaRecorder.start(250);
+
+          if (beatMediaEl) {
+            try { await beatMediaEl.play(); } catch {}
+          }
+
+          recordingStart = Date.now();
+          updateRecTimer();
+          clearInterval(recordingTimer);
+          recordingTimer = setInterval(updateRecTimer, 200);
+
+          setPill(recStatus, "Grabación: en curso", "live");
+          recordBtn.classList.add("recording");
+          recordBtn.textContent = "STOP";
+          recordHelp.textContent = "Grabando la mezcla beat + voz...";
+          showMsg("Grabación iniciada. Se está capturando la mezcla completa.", "info");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo iniciar la grabación.", "error");
+        }
+      }
+
+      function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state === "recording") {
+          mediaRecorder.stop();
+        }
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+        recordingStart = 0;
+        updateRecTimer();
+      }
+
+      function renderLastTakeCard(url, mime) {
+        const isVideo = (mime || "").startsWith("video");
+        lastTakeWrap.innerHTML = `
+          <div style="display:grid;gap:10px">
+            <div style="font-weight:800">Última mezcla grabada</div>
+            ${isVideo
+              ? `<video controls src="${url}" style="width:100%;border-radius:14px;background:#000;max-height:320px"></video>`
+              : `<audio controls src="${url}"></audio>`}
+            <div class="sub">Formato original: ${escapeHtml(mime || "audio/webm")}</div>
+          </div>
+        `;
+      }
+
+      function downloadBlob(blob, fileName) {
+        const a = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+      }
+
+      function baseFileName() {
+        const raw = (projectName.value || "mezcla-rap").trim();
+        return raw.replace(/[\\/:*?"<>|]+/g, "-");
+      }
+
+      function prepareDownloads() {
+        const isVideo = (recordedMimeType || "").startsWith("video");
+        downloadWebmBtn.disabled = !recordedBlob;
+        downloadWavBtn.disabled = !recordedBlob || isVideo;
+        downloadWavBtn.title = isVideo ? "No disponible para grabaciones en vídeo" : "";
+
+        downloadWebmBtn.onclick = () => {
+          if (!recordedBlob) return;
+          const ext = recordedMimeType.includes("ogg") ? "ogg" : "webm";
+          downloadBlob(recordedBlob, `${baseFileName()}.${ext}`);
+        };
+
+        downloadWavBtn.onclick = async () => {
+          if (!recordedBlob || isVideo) return;
+          try {
+            const wavBlob = await convertBlobToWav(recordedBlob);
+            downloadBlob(wavBlob, `${baseFileName()}.wav`);
+          } catch (err) {
+            console.error(err);
+            showMsg("No se pudo convertir la mezcla a WAV.", "error");
+          }
+        };
+      }
+
+      async function convertBlobToWav(blob) {
+        const arrayBuffer = await blob.arrayBuffer();
+        const tmpCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await tmpCtx.decodeAudioData(arrayBuffer.slice(0));
+        const wav = audioBufferToWav(audioBuffer);
+        try { await tmpCtx.close(); } catch {}
+        return new Blob([wav], { type: "audio/wav" });
+      }
+
+      function audioBufferToWav(buffer) {
+        const numChannels = buffer.numberOfChannels;
+        const sampleRate = buffer.sampleRate;
+        const bitDepth = 16;
+        const format = 1;
+
+        let result;
+        if (numChannels === 2) {
+          result = interleave(buffer.getChannelData(0), buffer.getChannelData(1));
+        } else {
+          result = buffer.getChannelData(0);
+        }
+
+        const dataLength = result.length * 2;
+        const arrayBuffer = new ArrayBuffer(44 + dataLength);
+        const view = new DataView(arrayBuffer);
+
+        writeString(view, 0, "RIFF");
+        view.setUint32(4, 36 + dataLength, true);
+        writeString(view, 8, "WAVE");
+        writeString(view, 12, "fmt ");
+        view.setUint32(16, 16, true);
+        view.setUint16(20, format, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * bitDepth / 8, true);
+        view.setUint16(32, numChannels * bitDepth / 8, true);
+        view.setUint16(34, bitDepth, true);
+        writeString(view, 36, "data");
+        view.setUint32(40, dataLength, true);
+
+        floatTo16BitPCM(view, 44, result);
+        return arrayBuffer;
+      }
+
+      function interleave(left, right) {
+        const length = left.length + right.length;
+        const result = new Float32Array(length);
+        let i = 0, j = 0;
+        while (i < length) {
+          result[i++] = left[j];
+          result[i++] = right[j];
+          j++;
+        }
+        return result;
+      }
+
+      function floatTo16BitPCM(output, offset, input) {
+        for (let i = 0; i < input.length; i++, offset += 2) {
+          let s = Math.max(-1, Math.min(1, input[i]));
+          output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+        }
+      }
+
+      function writeString(view, offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      async function blobToDataUrl(blob) {
+        return await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
+
+      async function saveCurrentAsProject() {
+        if (!recordedBlob) {
+          showMsg("Primero graba una mezcla antes de guardarla como proyecto.", "error");
+          return;
+        }
+
+        const name = (projectName.value || "Proyecto sin nombre").trim();
+
+        try {
+          const projects = getProjects();
+          const audioDataUrl = await blobToDataUrl(recordedBlob);
+
+          const project = {
+            id: currentProjectId || uid("project"),
+            name,
+            lyrics: lyrics.value,
+            audioDataUrl,
+            audioMime: recordedMimeType || "audio/webm",
+            beatName: beatFileName || "Sin beat cargado",
+            beatType,
+            bpm: currentBpm || null,
+            durationText: recTime.textContent,
+            createdAt: currentProjectId ? (projects.find(p => p.id === currentProjectId)?.createdAt || nowIso()) : nowIso(),
+            updatedAt: nowIso()
+          };
+
+          const idx = projects.findIndex(p => p.id === project.id);
+          if (idx >= 0) projects[idx] = project;
+          else projects.unshift(project);
+
+          setProjects(projects);
+          currentProjectId = project.id;
+          renderProjects();
+          showMsg(`Proyecto guardado: <strong>${escapeHtml(name)}</strong>.`, "success");
+        } catch (err) {
+          console.error(err);
+          showMsg("No se pudo guardar el proyecto. Puede que el archivo sea demasiado grande para el almacenamiento del navegador.", "error");
+        }
+      }
+
+      function saveCurrentAsLetter() {
+        const content = lyrics.value.trim();
+        if (!content) {
+          showMsg("Escribe algo antes de guardar la letra.", "error");
+          return;
+        }
+
+        const letters = getLetters();
+        const name = (projectName.value || "Letra sin nombre").trim();
+
+        const letter = {
+          id: currentLetterId || uid("letter"),
+          name,
+          lyrics: lyrics.value,
+          createdAt: currentLetterId ? (letters.find(l => l.id === currentLetterId)?.createdAt || nowIso()) : nowIso(),
+          updatedAt: nowIso()
+        };
+
+        const idx = letters.findIndex(l => l.id === letter.id);
+        if (idx >= 0) letters[idx] = letter;
+        else letters.unshift(letter);
+
+        setLetters(letters);
+        currentLetterId = letter.id;
+        renderLetters();
+        showMsg(`Letra guardada: <strong>${escapeHtml(name)}</strong>.`, "success");
+      }
+
+      function loadProject(id) {
+        const project = getProjects().find(p => p.id === id);
+        if (!project) return;
+
+        currentProjectId = project.id;
+        currentLetterId = null;
+        projectName.value = project.name || "";
+        lyrics.value = project.lyrics || "";
+        saveDraftFields();
+
+        recordedBlob = null;
+        recordedMimeType = project.audioMime || "audio/webm";
+        if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+        recordedUrl = project.audioDataUrl || "";
+
+        renderLastTakeCard(project.audioDataUrl, project.audioMime || "audio/webm");
+        prepareDownloadsFromSavedProject(project);
+        switchView("studyView");
+
+        if (project.bpm) setBpm(project.bpm, "auto");
+        else resetBpm();
+
+        showMsg(`Proyecto cargado: <strong>${escapeHtml(project.name)}</strong>. Puedes editar la letra y volver a grabar.`, "info");
+      }
+
+      function prepareDownloadsFromSavedProject(project) {
+        const isVideo = (project.audioMime || "").startsWith("video");
+        downloadWebmBtn.disabled = !project.audioDataUrl;
+        downloadWavBtn.disabled = !project.audioDataUrl || isVideo;
+        downloadWavBtn.title = isVideo ? "No disponible para proyectos en vídeo" : "";
+
+        downloadWebmBtn.onclick = async () => {
+          const blob = await (await fetch(project.audioDataUrl)).blob();
+          const ext = (project.audioMime || "").includes("ogg") ? "ogg" : "webm";
+          downloadBlob(blob, `${(project.name || "proyecto").replace(/[\\/:*?"<>|]+/g,"-")}.${ext}`);
+        };
+
+        downloadWavBtn.onclick = async () => {
+          if (isVideo) return;
+          try {
+            const blob = await (await fetch(project.audioDataUrl)).blob();
+            const wavBlob = await convertBlobToWav(blob);
+            downloadBlob(wavBlob, `${(project.name || "proyecto").replace(/[\\/:*?"<>|]+/g,"-")}.wav`);
+          } catch (err) {
+            console.error(err);
+            showMsg("No se pudo convertir este proyecto a WAV.", "error");
+          }
+        };
+      }
+
+      function loadLetter(id) {
+        const letter = getLetters().find(l => l.id === id);
+        if (!letter) return;
+
+        currentLetterId = letter.id;
+        currentProjectId = null;
+        projectName.value = letter.name || "";
+        lyrics.value = letter.lyrics || "";
+        saveDraftFields();
+        switchView("studyView");
+        showMsg(`Letra cargada: <strong>${escapeHtml(letter.name)}</strong>.`, "info");
+      }
+
+      function deleteProject(id) {
+        const list = getProjects().filter(p => p.id !== id);
+        setProjects(list);
+        if (currentProjectId === id) currentProjectId = null;
+        renderProjects();
+        showMsg("Proyecto eliminado.", "info");
+      }
+
+      function deleteLetter(id) {
+        const list = getLetters().filter(l => l.id !== id);
+        setLetters(list);
+        if (currentLetterId === id) currentLetterId = null;
+        renderLetters();
+        showMsg("Letra eliminada.", "info");
+      }
+
+      function exportBackup() {
+        const backup = {
+          app: "rap-studio-dashboard",
+          version: 1,
+          exportedAt: nowIso(),
+          projects: getProjects(),
+          letters: getLetters()
+        };
+
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+        const dateStr = new Date().toISOString().slice(0, 10);
+        downloadBlob(blob, `rap-studio-backup-${dateStr}.json`);
+        showMsg("Backup exportado. Guarda ese archivo .json en un sitio seguro (Drive, email, USB...).", "success");
+      }
+
+      function importBackupFile(file) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          let data;
+          try {
+            data = JSON.parse(reader.result);
+          } catch (err) {
+            showMsg("No se pudo leer el archivo: no es un JSON válido.", "error");
+            return;
+          }
+
+          if (!data || (!Array.isArray(data.projects) && !Array.isArray(data.letters))) {
+            showMsg("El archivo no parece un backup válido de Rap Studio.", "error");
+            return;
+          }
+
+          const existingProjects = getProjects();
+          const existingLetters = getLetters();
+          const existingProjectIds = new Set(existingProjects.map(p => p.id));
+          const existingLetterIds = new Set(existingLetters.map(l => l.id));
+
+          let addedProjects = 0;
+          let addedLetters = 0;
+
+          (data.projects || []).forEach(p => {
+            if (p && p.id && !existingProjectIds.has(p.id)) {
+              existingProjects.push(p);
+              existingProjectIds.add(p.id);
+              addedProjects++;
+            }
+          });
+
+          (data.letters || []).forEach(l => {
+            if (l && l.id && !existingLetterIds.has(l.id)) {
+              existingLetters.push(l);
+              existingLetterIds.add(l.id);
+              addedLetters++;
+            }
+          });
+
+          existingProjects.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+          existingLetters.sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+          try {
+            setProjects(existingProjects);
+            setLetters(existingLetters);
+          } catch (err) {
+            console.error(err);
+            showMsg("El backup se leyó bien pero no cabe todo en el almacenamiento del navegador (probablemente por vídeos grandes). Borra algún proyecto antiguo o importa un backup más pequeño.", "error");
+            return;
+          }
+
+          renderProjects();
+          renderLetters();
+
+          if (addedProjects === 0 && addedLetters === 0) {
+            showMsg("El backup se leyó correctamente, pero todo lo que contiene ya lo tenías guardado aquí.", "info");
+          } else {
+            showMsg(`Backup importado: ${addedProjects} proyecto(s) y ${addedLetters} letra(s) nuevos añadidos. Lo que ya tenías no se ha duplicado ni borrado.`, "success");
+          }
+        };
+
+        reader.onerror = () => showMsg("No se pudo leer el archivo de backup.", "error");
+        reader.readAsText(file);
+      }
+
+      function renderProjects() {
+        const allProjects = getProjects();
+        const projects = projectFilter
+          ? allProjects.filter(p => (p.name || "").toLowerCase().includes(projectFilter))
+          : allProjects;
+
+        if (!projects.length) {
+          projectsPane.innerHTML = `<div class="empty-card">${allProjects.length ? "No hay proyectos que coincidan con la búsqueda." : "No hay proyectos guardados todavía."}</div>`;
+          updateBadges();
+          return;
+        }
+
+        projectsPane.innerHTML = projects.map(p => `
+          <div class="item">
+            <h4>
+              <span>${escapeHtml(p.name || "Proyecto")}</span>
+              <small>${new Date(p.updatedAt).toLocaleString("es-ES")}</small>
+            </h4>
+            <div class="sub">Beat: ${escapeHtml(p.beatName || "Sin beat")} · Toma: ${escapeHtml(p.durationText || "--:--")}${p.bpm ? ` · ${p.bpm} BPM` : ""}${(p.audioMime||"").startsWith("video") ? " · 🎥 Vídeo" : ""}</div>
+            ${(p.audioMime||"").startsWith("video")
+              ? `<video id="projectAudio_${p.id}" src="${p.audioDataUrl}" style="width:100%;border-radius:12px;background:#000;max-height:220px"></video>`
+              : `<audio id="projectAudio_${p.id}" src="${p.audioDataUrl}"></audio>`}
+            <div class="actions">
+              <button class="btn secondary" data-load-project="${p.id}">Abrir</button>
+              <button class="btn secondary" data-project-play="${p.id}">▶️ Play</button>
+              <button class="btn secondary" data-project-pause="${p.id}">⏸️ Pause</button>
+              <button class="btn secondary" data-project-stop="${p.id}">⏹️ Stop</button>
+              <button class="btn danger" data-delete-project="${p.id}">Borrar</button>
+            </div>
+            <pre>${escapeHtml((p.lyrics || "").slice(0, 320) || "Sin letra")}</pre>
+          </div>
+        `).join("");
+
+        updateBadges();
+      }
+
+      function renderLetters() {
+        const allLetters = getLetters();
+        const letters = letterFilter
+          ? allLetters.filter(l => (l.name || "").toLowerCase().includes(letterFilter))
+          : allLetters;
+
+        if (!letters.length) {
+          lettersPane.innerHTML = `<div class="empty-card">${allLetters.length ? "No hay letras que coincidan con la búsqueda." : "No hay letras guardadas todavía."}</div>`;
+          updateBadges();
+          return;
+        }
+
+        lettersPane.innerHTML = letters.map(l => `
+          <div class="item">
+            <h4>
+              <span>${escapeHtml(l.name || "Letra")}</span>
+              <small>${new Date(l.updatedAt).toLocaleString("es-ES")}</small>
+            </h4>
+            <pre>${escapeHtml((l.lyrics || "").slice(0, 650))}</pre>
+            <div class="actions">
+              <button class="btn secondary" data-load-letter="${l.id}">Abrir</button>
+              <button class="btn danger" data-delete-letter="${l.id}">Borrar</button>
+            </div>
+          </div>
+        `).join("");
+
+        updateBadges();
+      }
+
+      function handleProjectsClicks(e) {
+        const t = e.target;
+
+        const loadProjectId = t.getAttribute("data-load-project");
+        const deleteProjectId = t.getAttribute("data-delete-project");
+        const projectPlayId = t.getAttribute("data-project-play");
+        const projectPauseId = t.getAttribute("data-project-pause");
+        const projectStopId = t.getAttribute("data-project-stop");
+
+        if (loadProjectId) loadProject(loadProjectId);
+        if (deleteProjectId) deleteProject(deleteProjectId);
+
+        if (projectPlayId) {
+          const el = document.getElementById(`projectAudio_${projectPlayId}`);
+          if (el) {
+            el.play().catch(() => showMsg("El navegador bloqueó la reproducción hasta una interacción del usuario.", "error"));
+          }
+        }
+
+        if (projectPauseId) {
+          const el = document.getElementById(`projectAudio_${projectPauseId}`);
+          if (el) el.pause();
+        }
+
+        if (projectStopId) {
+          const el = document.getElementById(`projectAudio_${projectStopId}`);
+          if (el) {
+            el.pause();
+            el.currentTime = 0;
+          }
+        }
+      }
+
+      function handleLettersClicks(e) {
+        const t = e.target;
+        const loadLetterId = t.getAttribute("data-load-letter");
+        const deleteLetterId = t.getAttribute("data-delete-letter");
+
+        if (loadLetterId) loadLetter(loadLetterId);
+        if (deleteLetterId) deleteLetter(deleteLetterId);
+      }
+
+      unlockAudioBtn.addEventListener("click", unlockAudioEngine);
+      requestMicBtn.addEventListener("click", requestMic);
+      requestCameraBtn.addEventListener("click", requestCamera);
+      includeVideoBtn.addEventListener("click", toggleIncludeVideo);
+
+      beatInput.addEventListener("change", () => {
+        const file = beatInput.files?.[0];
+        if (file) loadBeatFromFile(file);
+      });
+
+      playBeatBtn.addEventListener("click", startBeatPlayback);
+      pauseBeatBtn.addEventListener("click", pauseBeatPlayback);
+      stopBeatBtn.addEventListener("click", stopBeatPlayback);
+
+      beatPlayUI.addEventListener("click", startBeatPlayback);
+      beatPauseUI.addEventListener("click", pauseBeatPlayback);
+      beatStopUI.addEventListener("click", stopBeatPlayback);
+
+      detectTempoBtn.addEventListener("click", detectTempoFromBeat);
+      tapTempoBtn.addEventListener("click", handleTapTempo);
+      metronomeBtn.addEventListener("click", toggleMetronome);
+      bpmManualInput.addEventListener("change", handleManualBpmChange);
+      bpmManualInput.addEventListener("input", () => {
+        if (metronomeOn) handleManualBpmChange();
+      });
+
+      recordBtn.addEventListener("click", async () => {
+        if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
+        else await beginRecordingWithCountdown();
+      });
+
+      saveCurrentAsProjectBtn.addEventListener("click", saveCurrentAsProject);
+      saveCurrentAsLetterBtn.addEventListener("click", saveCurrentAsLetter);
+      exportLyricsBtn.addEventListener("click", exportLyricsAsTxt);
+      loopBeatBtn.addEventListener("click", toggleBeatLoop);
+
+      clearLyricsBtn.addEventListener("click", () => {
+        lyrics.value = "";
+        currentLetterId = null;
+        saveDraftFields();
+        showMsg("Editor limpiado.", "info");
+      });
+
+      lyrics.addEventListener("input", saveDraftFields);
+      projectName.addEventListener("input", saveDraftFields);
+
+      beatGainSlider.addEventListener("input", () => {
+        const val = parseFloat(beatGainSlider.value || "1");
+        if (beatGainNode) beatGainNode.gain.value = val;
+        beatGainValue.textContent = Math.round(val * 100) + "%";
+      });
+
+      micGainSlider.addEventListener("input", () => {
+        const val = parseFloat(micGainSlider.value || "1");
+        if (micGainNode) micGainNode.gain.value = val;
+        micGainValue.textContent = Math.round(val * 100) + "%";
+      });
+
+      projectsPane.addEventListener("click", handleProjectsClicks);
+      lettersPane.addEventListener("click", handleLettersClicks);
+
+      projectSearch.addEventListener("input", () => {
+        projectFilter = projectSearch.value.trim().toLowerCase();
+        renderProjects();
+      });
+
+      letterSearch.addEventListener("input", () => {
+        letterFilter = letterSearch.value.trim().toLowerCase();
+        renderLetters();
+      });
+
+      exportBackupBtn.addEventListener("click", exportBackup);
+
+      importBackupInput.addEventListener("change", () => {
+        const file = importBackupInput.files?.[0];
+        if (file) importBackupFile(file);
+        importBackupInput.value = "";
+      });
+
+      window.addEventListener("beforeunload", () => {
+        saveDraftFields();
+        try {
+          if (recordedUrl && recordedUrl.startsWith("blob:")) URL.revokeObjectURL(recordedUrl);
+          if (beatUrl) URL.revokeObjectURL(beatUrl);
+          if (drawRAF) cancelAnimationFrame(drawRAF);
+          if (levelRAF) cancelAnimationFrame(levelRAF);
+          if (metronomeSchedulerId) clearInterval(metronomeSchedulerId);
+          stopCameraTracks();
+        } catch {}
+      });
+
+      function boot() {
+        lyrics.value = localStorage.getItem(STORAGE_KEYS.draftLyrics) || "";
+        projectName.value = localStorage.getItem(STORAGE_KEYS.draftProjectName) || "";
+
+        beatGainValue.textContent = "100%";
+        micGainValue.textContent = "100%";
+
+        renderProjects();
+        renderLetters();
+        updateBadges();
+
+        if (!window.MediaRecorder) {
+          showMsg("Tu navegador no soporta MediaRecorder. Usa Chrome o Brave actualizado.", "error");
+        } else {
+          formatInfo.textContent = pickBestMimeType() || "webm";
+        }
+
+        updateHeaderKpis();
+
+        beatPlayUI.disabled = true;
+        beatPauseUI.disabled = true;
+        beatStopUI.disabled = true;
+        detectTempoBtn.disabled = true;
+        loopBeatBtn.disabled = true;
+      }
+
+      boot();
+    })();
+  </script>
+</body>
+</html>
